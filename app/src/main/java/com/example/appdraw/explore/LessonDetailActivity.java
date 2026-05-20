@@ -24,7 +24,7 @@ import android.net.Uri;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.Toast;
-import com.example.appdraw.HomeworkActivity;
+import com.example.appdraw.explore.HomeworkActivity;
 import com.example.appdraw.R;
 
 /**
