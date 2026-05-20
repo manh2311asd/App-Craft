@@ -23,6 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+/**
+ * Custom View xử lý Canvas vẽ (UC-10).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Đảm nhiệm logic vẽ đường nét, hình khối, tẩy, zoom in/out và trích xuất ảnh Base64.
+ */
 public class ZoomDrawingView extends View {
 
     public enum BrushType { PENCIL, WATERCOLOR, CRAYON, INK, MARKER, AIRBRUSH, CALLIGRAPHY, OIL }

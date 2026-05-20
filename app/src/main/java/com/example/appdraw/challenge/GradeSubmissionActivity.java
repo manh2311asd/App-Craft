@@ -60,8 +60,8 @@ public class GradeSubmissionActivity extends AppCompatActivity {
                 submissionUserId = doc.getString("userId");
                 challengeTitle = doc.getString("challengeTitle");
                 
-                String studentName = doc.getString("userName");
-                String studentAvatar = doc.getString("userAvatar");
+                String userName = doc.getString("userName");
+                String userAvatar = doc.getString("userAvatar");
                 String note = doc.getString("note");
                 String imageUrl = doc.getString("imageUrl");
                 
@@ -120,7 +120,7 @@ public class GradeSubmissionActivity extends AppCompatActivity {
                     llPreviousFeedbacksContainer.setVisibility(android.view.View.VISIBLE);
                 }
                 
-                android.widget.LinearLayout llProfile = findViewById(R.id.ll_grade_student_profile);
+                android.widget.LinearLayout llProfile = findViewById(R.id.ll_grade_user_profile);
                 if (llProfile != null) {
                      llProfile.setOnClickListener(v -> {
                          android.content.Intent intent = new android.content.Intent(this, com.example.appdraw.community.OtherUserProfileActivity.class);
@@ -129,15 +129,15 @@ public class GradeSubmissionActivity extends AppCompatActivity {
                      });
                 }
 
-                TextView tvName = findViewById(R.id.tv_grade_student_name);
+                TextView tvName = findViewById(R.id.tv_grade_user_name);
                 TextView tvTitle = findViewById(R.id.tv_grade_challenge_title);
                 TextView tvNote = findViewById(R.id.tv_grade_artwork_note);
-                ImageView ivAvatar = findViewById(R.id.iv_grade_student_avatar);
+                ImageView ivAvatar = findViewById(R.id.iv_grade_user_avatar);
                 ImageView ivArtwork = findViewById(R.id.iv_grade_artwork);
 
-                if (tvName != null) tvName.setText(studentName);
+                if (tvName != null) tvName.setText(userName);
                 if (tvTitle != null) tvTitle.setText("Thử thách: " + challengeTitle);
-                if (tvNote != null) tvNote.setText((note != null && !note.trim().isEmpty()) ? note : "Không có học viên mô tả.");
+                if (tvNote != null) tvNote.setText((note != null && !note.trim().isEmpty()) ? note : "Không có user mô tả.");
 
                 if (ivArtwork != null && imageUrl != null && !imageUrl.isEmpty()) {
                     byte[] decodedString = android.util.Base64.decode(imageUrl.split(",")[1], android.util.Base64.DEFAULT);
@@ -145,12 +145,12 @@ public class GradeSubmissionActivity extends AppCompatActivity {
                 }
                 
                 if (ivAvatar != null) {
-                    if (studentAvatar != null && !studentAvatar.isEmpty()) {
-                        if (studentAvatar.startsWith("data:image")) {
-                             byte[] decodedString = android.util.Base64.decode(studentAvatar.split(",")[1], android.util.Base64.DEFAULT);
+                    if (userAvatar != null && !userAvatar.isEmpty()) {
+                        if (userAvatar.startsWith("data:image")) {
+                             byte[] decodedString = android.util.Base64.decode(userAvatar.split(",")[1], android.util.Base64.DEFAULT);
                              Glide.with(this).load(decodedString).circleCrop().into(ivAvatar);
                         } else {
-                             Glide.with(this).load(studentAvatar).circleCrop().into(ivAvatar);
+                             Glide.with(this).load(userAvatar).circleCrop().into(ivAvatar);
                         }
                     } else {
                         Glide.with(this).load(R.drawable.ic_default_user).circleCrop().into(ivAvatar);

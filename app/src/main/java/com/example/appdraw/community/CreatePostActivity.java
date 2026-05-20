@@ -27,6 +27,11 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * Màn hình Đăng bài viết mới (UC-06).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Xử lý người dùng viết nội dung, đính kèm hình ảnh và lưu Post vào Firestore.
+ */
 public class CreatePostActivity extends AppCompatActivity {
 
     private EditText etContent;

@@ -11,6 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.appdraw.project.ProjectListActivity;
 
+/**
+ * Màn hình Quản lý Thông tin cá nhân (UC-02).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Xử lý hiển thị thông tin Profile, tác phẩm, dự án và tương tác Follow/Unfollow.
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView tabArtwork, tabPost, tabProject, tabSaved;

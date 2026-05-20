@@ -30,6 +30,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Màn hình Nộp bài dự thi Thử thách (UC-13).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Xử lý tải ảnh (Base64) hoặc link bài thi và đẩy lên hệ thống Firestore.
+ */
 public class SubmitChallengeActivity extends AppCompatActivity {
 
     private ImageView ivArtworkPreview;

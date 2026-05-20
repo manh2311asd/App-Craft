@@ -7,6 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.appdraw.R;
 
+/**
+ * Màn hình Danh sách Thử thách nghệ thuật (UC-13).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Hiển thị các cuộc thi đang diễn ra, người dùng có thể xem và tham gia.
+ */
 public class ChallengeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

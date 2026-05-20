@@ -30,6 +30,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Màn hình Tạo Thử thách mới dành cho Mentor (UC-14).
+ * Người thực hiện: Đặng Thị Hồng Vân.
+ * Xử lý nhập thông tin, luật lệ thi và lưu Thử thách lên hệ thống Firestore.
+ */
 public class CreateChallengeActivity extends AppCompatActivity {
     
     private Uri selectedLocalUri;

@@ -21,6 +21,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Màn hình Quản lý Chi tiết Dự án (UC-12).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Cho phép người dùng theo dõi và quản lý các tác phẩm (Artwork) thuộc dự án.
+ */
 public class ProjectDetailActivity extends AppCompatActivity {
     private String projectId;
     private String projectName;

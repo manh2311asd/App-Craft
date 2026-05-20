@@ -8,6 +8,11 @@ import android.view.Window;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 
+/**
+ * Màn hình Quản lý Vé Sự kiện của người dùng (UC-17).
+ * Người thực hiện: Đặng Thị Hồng Vân.
+ * Hiển thị mã QR và thông tin vé mà người dùng đã đăng ký thành công.
+ */
 public class TicketActivity extends AppCompatActivity {
 
     private MaterialButton btnRemindMe;

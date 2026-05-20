@@ -32,6 +32,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Màn hình Xem Lịch trình & Sự kiện (UC-17).
+ * Người thực hiện: Đặng Thị Hồng Vân.
+ * Hiển thị lịch dạng tháng/ngày, liệt kê các sự kiện nghệ thuật sắp diễn ra.
+ */
 public class EventScheduleActivity extends AppCompatActivity {
 
     private ImageView btnBack, btnAddEvent;

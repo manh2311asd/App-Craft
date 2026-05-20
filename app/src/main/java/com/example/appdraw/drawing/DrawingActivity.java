@@ -12,6 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.appdraw.R;
 import com.example.appdraw.ZoomDrawingView;
 
+/**
+ * Màn hình Vẽ tác phẩm trên Canvas (UC-10).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Xử lý các thao tác đồ họa: chọn bút, cọ, màu sắc, Undo/Redo, và thước kẻ ảo.
+ */
 public class DrawingActivity extends AppCompatActivity {
 
     private ZoomDrawingView drawingView;

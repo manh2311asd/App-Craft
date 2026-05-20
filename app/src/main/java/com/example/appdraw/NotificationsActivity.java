@@ -15,6 +15,11 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Màn hình hiển thị Thông báo (UC-03).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Lấy thông báo tương tác (Like, Comment, Follow) từ Firestore và đánh dấu đã đọc.
+ */
 public class NotificationsActivity extends AppCompatActivity {
     private RecyclerView rvNotifications;
     private NotificationAdapter adapter;

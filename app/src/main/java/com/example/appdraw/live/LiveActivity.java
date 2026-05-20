@@ -8,6 +8,11 @@ import com.example.appdraw.R;
 import com.zegocloud.uikit.prebuilt.livestreaming.ZegoUIKitPrebuiltLiveStreamingConfig;
 import com.zegocloud.uikit.prebuilt.livestreaming.ZegoUIKitPrebuiltLiveStreamingFragment;
 
+/**
+ * Màn hình Xem/Phát Livestream (UC-15, UC-16).
+ * Người thực hiện: Đặng Thị Hồng Vân.
+ * Tích hợp SDK ZegoCloud RTC để truyền phát video trực tiếp và bình luận realtime.
+ */
 public class LiveActivity extends AppCompatActivity {
 
     @Override

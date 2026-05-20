@@ -10,6 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.appdraw.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Màn hình Đăng ký tài khoản (UC-01).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Hỗ trợ người dùng tạo tài khoản mới qua Firebase Authentication.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

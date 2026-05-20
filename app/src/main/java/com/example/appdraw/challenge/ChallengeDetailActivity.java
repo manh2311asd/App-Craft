@@ -6,6 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.appdraw.R;
 
+/**
+ * Màn hình Chi tiết Thử thách (UC-13).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Hiển thị thể lệ thử thách, thời gian, giải thưởng và các bài dự thi.
+ */
 public class ChallengeDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

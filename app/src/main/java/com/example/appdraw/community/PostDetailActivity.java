@@ -21,6 +21,11 @@ import com.google.firebase.firestore.DocumentReference;
 import java.util.UUID;
 import java.util.Map;
 
+/**
+ * Màn hình Chi tiết bài viết và Tương tác (UC-07).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Quản lý tính năng Like, hiển thị bình luận và thêm bình luận mới cập nhật realtime.
+ */
 public class PostDetailActivity extends AppCompatActivity {
     private String postId;
     private FirebaseFirestore db;

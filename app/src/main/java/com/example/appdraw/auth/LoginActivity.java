@@ -21,6 +21,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Màn hình Đăng nhập (UC-01).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Xử lý xác thực người dùng bằng Firebase Authentication và định tuyến người dùng dựa trên Role (User/Mentor).
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

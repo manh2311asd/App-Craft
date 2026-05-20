@@ -27,6 +27,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Màn hình Danh sách Dự án (UC-12).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Liệt kê các dự án nghệ thuật cá nhân đang thực hiện hoặc đã hoàn thành.
+ */
 public class ProjectListActivity extends AppCompatActivity {
 
     private RecyclerView rvProjects;

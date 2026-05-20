@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment {
     private ListenerRegistration challengeListenerReg;
     private com.google.firebase.firestore.ListenerRegistration savedLessonsListenerReg;
     private boolean reseedAttempted = false;
+    private boolean isLoadingSuggested = false;
 
     @Nullable
     @Override
@@ -219,8 +220,7 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // --- Bài học gợi ý ---
-        setupSuggestedLessons(view);
+        // Bài học gợi ý sẽ được load trong onResume để tránh gọi 2 lần
 
         // Xem tất cả thử thách
         View tvViewAllChallenges = view.findViewById(R.id.tv_view_all_challenges);
@@ -290,11 +290,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupSuggestedLessons(View view) {
+        // Tránh gọi trùng khi 2 callback async cùng chạy
+        if (isLoadingSuggested) return;
+        isLoadingSuggested = true;
+
         android.widget.LinearLayout container = view.findViewById(R.id.ll_suggested_lessons_container);
-        if (container == null) return;
+        if (container == null) { isLoadingSuggested = false; return; }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        if (getContext() == null) return;
+        if (getContext() == null) { isLoadingSuggested = false; return; }
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         container.removeAllViews();
@@ -302,7 +306,7 @@ public class HomeFragment extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String uid = (auth.getCurrentUser() != null) ? auth.getCurrentUser().getUid() : null;
 
-        if (uid == null) return;
+        if (uid == null) { isLoadingSuggested = false; return; }
 
         // B1: Lấy danh sách bài đã học xong
         db.collection("Users").document(uid).collection("lessonProgress").get().addOnSuccessListener(progSnap -> {
@@ -321,8 +325,12 @@ public class HomeFragment extends Fragment {
                 allDocs.sort((d1, d2) -> {
                     Long c1 = d1.getLong("createdAt");
                     Long c2 = d2.getLong("createdAt");
+                    // Xử lý đầy đủ 4 trường hợp để tránh IllegalArgumentException
                     if (c1 != null && c2 != null) return Long.compare(c1, c2);
+                    if (c1 != null) return -1; // d1 có createdAt → lên trước
+                    if (c2 != null) return 1;  // d2 có createdAt → d1 xuống sau
 
+                    // Cả hai đều không có createdAt → so sánh theo ID
                     String id1 = d1.getId();
                     String id2 = d2.getId();
                     try {
@@ -481,7 +489,7 @@ public class HomeFragment extends Fragment {
                         if (imageResStr != null && !imageResStr.isEmpty() && !imageResStr.matches("-?\\d+")) {
                             try {
                                 int resId = getResources().getIdentifier(imageResStr, "drawable", getContext().getPackageName());
-                                if (resId != 0) ivThumb.setImageResource(resId);
+                                if (resId != 0) com.bumptech.glide.Glide.with(HomeFragment.this).load(resId).centerCrop().into(ivThumb);
                             } catch (Exception e) {}
                         } else if (imageUrl != null && !imageUrl.isEmpty()) {
                             if (imageUrl.startsWith("data:image")) {
@@ -489,13 +497,13 @@ public class HomeFragment extends Fragment {
                                     byte[] imageByteArray = android.util.Base64.decode(imageUrl.split(",")[1], android.util.Base64.DEFAULT);
                                     com.bumptech.glide.Glide.with(this).load(imageByteArray).centerCrop().into(ivThumb);
                                 } catch (Exception e) {
-                                    ivThumb.setImageResource(R.drawable.ve_hoa_mau_nuoc);
+                                    com.bumptech.glide.Glide.with(HomeFragment.this).load(R.drawable.ve_hoa_mau_nuoc).centerCrop().into(ivThumb);
                                 }
                             } else {
                                 com.bumptech.glide.Glide.with(this).load(imageUrl).centerCrop().into(ivThumb);
                             }
                         } else {
-                            ivThumb.setImageResource(R.drawable.ve_hoa_mau_nuoc);
+                            com.bumptech.glide.Glide.with(HomeFragment.this).load(R.drawable.ve_hoa_mau_nuoc).centerCrop().into(ivThumb);
                         }
                     }
 
@@ -545,6 +553,7 @@ public class HomeFragment extends Fragment {
 
                     container.addView(lessonView);
                 }
+                isLoadingSuggested = false; // Reset để lần sau onResume có thể refresh
             });
         });
     }
@@ -647,7 +656,7 @@ public class HomeFragment extends Fragment {
                                 int resId = getResources().getIdentifier(imageResStr, "drawable",
                                         getContext().getPackageName());
                                 if (resId != 0)
-                                    ivThumb.setImageResource(resId);
+                                    com.bumptech.glide.Glide.with(HomeFragment.this).load(resId).centerCrop().into(ivThumb);
                             } catch (Exception ex) {
                             }
                         }
@@ -972,6 +981,34 @@ public class HomeFragment extends Fragment {
                 String rulesStr = doc.getString("rules");
                 String rewardsStr = doc.getString("rewards");
 
+                Long endTimeMillis = doc.getLong("endTimeMillis");
+                boolean isExpired = false;
+                if (endTimeMillis != null) {
+                    if (System.currentTimeMillis() > endTimeMillis) {
+                        isExpired = true;
+                    }
+                } else if (dateStr != null && dateStr.contains("-")) {
+                    try {
+                        String endDate = dateStr.split("-")[1].trim();
+                        if (endDate.length() <= 5) {
+                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault());
+                            java.util.Date date = sdf.parse(endDate);
+                            if (date != null) {
+                                java.util.Calendar cal = java.util.Calendar.getInstance();
+                                int currentYear = cal.get(java.util.Calendar.YEAR);
+                                cal.setTime(date);
+                                cal.set(java.util.Calendar.YEAR, currentYear);
+                                cal.set(java.util.Calendar.HOUR_OF_DAY, 23);
+                                cal.set(java.util.Calendar.MINUTE, 59);
+                                if (System.currentTimeMillis() > cal.getTimeInMillis()) {
+                                    isExpired = true;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {}
+                }
+                final boolean finalIsExpired = isExpired;
+
                 View cardView = inflater.inflate(R.layout.item_challenge_card, container, false);
 
                 TextView tvTitle = cardView.findViewById(R.id.tv_challenge_title);
@@ -1005,14 +1042,14 @@ public class HomeFragment extends Fragment {
                     } else if (imageResStr != null && !imageResStr.isEmpty()) {
                         try {
                             int resId = Integer.parseInt(imageResStr);
-                            ivImage.setImageResource(resId);
+                            com.bumptech.glide.Glide.with(HomeFragment.this).load(resId).centerCrop().into(ivImage);
                         } catch (Exception e) {
                             // imageResStr là tên drawable string
                             try {
                                 int resId = getResources().getIdentifier(imageResStr, "drawable",
                                         requireContext().getPackageName());
                                 if (resId != 0)
-                                    ivImage.setImageResource(resId);
+                                    com.bumptech.glide.Glide.with(HomeFragment.this).load(resId).centerCrop().into(ivImage);
                             } catch (Exception ex) {
                             }
                         }
@@ -1053,6 +1090,10 @@ public class HomeFragment extends Fragment {
                             }
                         } else {
                             // Check if joined or submitted
+                            if (btnJoin != null && finalIsExpired) {
+                                btnJoin.setText("Đã kết thúc");
+                                btnJoin.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#9E9E9E")));
+                            }
                             db.collection("Users").document(uid).collection("joinedChallenges").document(title)
                                     .get().addOnSuccessListener(chalDoc -> {
                                         if (chalDoc.exists() && btnJoin != null) {
@@ -1062,9 +1103,9 @@ public class HomeFragment extends Fragment {
                                                 btnJoin.setBackgroundTintList(
                                                         ColorStateList.valueOf(Color.parseColor("#4CAF50"))); // Green
                                             } else {
-                                                btnJoin.setText("Tiếp tục");
+                                                btnJoin.setText(finalIsExpired ? "Đã kết thúc" : "Tiếp tục");
                                                 btnJoin.setBackgroundTintList(
-                                                        ColorStateList.valueOf(Color.parseColor("#E67E22"))); // Orange
+                                                        ColorStateList.valueOf(Color.parseColor(finalIsExpired ? "#9E9E9E" : "#E67E22"))); // Gray or Orange
                                             }
                                         }
                                     });
@@ -1076,6 +1117,10 @@ public class HomeFragment extends Fragment {
                     btnJoin.setOnClickListener(v -> {
                         String currentText = btnJoin.getText().toString();
                         if ("Tham gia".equals(currentText) && uid != null) {
+                            if (finalIsExpired) {
+                                Toast.makeText(getContext(), "Thử thách này đã kết thúc, không thể tham gia!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             btnJoin.setEnabled(false); // Ngăn double-click
 
                             // Check if previously joined to prevent multiple increments

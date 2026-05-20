@@ -17,6 +17,11 @@ import androidx.fragment.app.Fragment;
 import com.example.appdraw.NotificationsActivity;
 import com.example.appdraw.R;
 
+/**
+ * Fragment hiển thị Bảng tin Cộng đồng - Feed (UC-05).
+ * Người thực hiện: Cao Đức Mạnh.
+ * Tải danh sách các bài đăng (Post) từ Firestore và xử lý cuộn mượt mà.
+ */
 public class CommunityFragment extends Fragment {
 
     private String currentFilter = "Tất cả";

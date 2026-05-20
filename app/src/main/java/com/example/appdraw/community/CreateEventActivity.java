@@ -28,6 +28,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+/**
+ * Màn hình Tạo Sự kiện mới dành cho Mentor (UC-18).
+ * Người thực hiện: Đặng Thị Hồng Vân.
+ * Cho phép Mentor lên lịch sự kiện offline/online, phát hành vé tham gia.
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
     private ImageView ivBack, ivCoverPreview;

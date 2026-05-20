@@ -100,20 +100,28 @@ public class RegisterProfileActivity extends AppCompatActivity {
 
     private void saveData(String uid, String fullName, String bio, String avatarUrl) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> profile = new HashMap<>();
-        profile.put("fullName", fullName);
-        profile.put("bio", bio);
-        if (!avatarUrl.isEmpty()) {
-            profile.put("avatarUrl", avatarUrl);
-        }
-        
-        Map<String, Object> userUpdates = new HashMap<>();
-        userUpdates.put("profile", profile);
 
-        db.collection("Users").document(uid).set(userUpdates, SetOptions.merge())
-            .addOnCompleteListener(task -> {
+        // 1. Lưu thông tin chung vào collection "Users"
+        Map<String, Object> userCommon = new HashMap<>();
+        userCommon.put("username", fullName);
+        userCommon.put("email", com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        // role sẽ được set ở bước RegisterLevelActivity
+
+        db.collection("Users").document(uid).set(userCommon, SetOptions.merge())
+            .addOnSuccessListener(unused -> {
+                // 2. Lưu thông tin profile tạm thời vào SharedPreferences
+                //    để RegisterLevelActivity biết avatarUrl và bio cần lưu vào Users/Mentors
+                getSharedPreferences("RegisterTemp", MODE_PRIVATE).edit()
+                    .putString("avatarUrl", avatarUrl)
+                    .putString("bio", bio)
+                    .apply();
+
                 layoutLoading.setVisibility(View.GONE);
                 startActivity(new Intent(this, RegisterInterestsActivity.class));
+            })
+            .addOnFailureListener(e -> {
+                layoutLoading.setVisibility(View.GONE);
+                Toast.makeText(this, "Lỗi lưu dữ liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
     }
 }

@@ -29,6 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Màn hình Danh sách Livestream đang diễn ra (UC-15).
+ * Người thực hiện: Đặng Thị Hồng Vân.
+ * Hiển thị các phòng xem Live để người học có thể chọn tham gia.
+ */
 public class LiveListActivity extends AppCompatActivity {
 
     private RecyclerView rvLiveList;

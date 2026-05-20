@@ -28,6 +28,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Màn hình Chỉnh sửa Thông tin cá nhân (UC-02).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Hỗ trợ người dùng cập nhật avatar, bio và link portfolio.
+ */
 public class EditProfileActivity extends AppCompatActivity {
 
     private ImageView ivAvatar;

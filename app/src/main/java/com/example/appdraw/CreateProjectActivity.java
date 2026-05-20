@@ -15,6 +15,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Màn hình Tạo Dự án mới (UC-12).
+ * Người thực hiện: Vũ Quang Vinh.
+ * Quản lý khởi tạo dự án nghệ thuật dài hạn và cập nhật tiến độ lưu trên Firestore.
+ */
 public class CreateProjectActivity extends AppCompatActivity {
 
     @Override

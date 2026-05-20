@@ -8,10 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.appdraw.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RegisterInterestsActivity extends AppCompatActivity {
     
@@ -50,23 +46,14 @@ public class RegisterInterestsActivity extends AppCompatActivity {
                 return;
             }
             
-            // Save to Firebase Firestore
+            // Save to SharedPreferences temporarily (role chưa xác định)
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                Map<String, Object> data = new HashMap<>();
-                
                 String joinedInterests = android.text.TextUtils.join(", ", selectedInterests);
-                data.put("interest", joinedInterests);
-                
-                db.collection("Users").document(user.getUid()).set(data, SetOptions.merge())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            startActivity(new Intent(this, RegisterLevelActivity.class));
-                        } else {
-                            Toast.makeText(this, "Lỗi lưu dữ liệu: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                getSharedPreferences("RegisterTemp", MODE_PRIVATE).edit()
+                    .putString("interests", joinedInterests)
+                    .apply();
+                startActivity(new Intent(this, RegisterLevelActivity.class));
             } else {
                 Toast.makeText(this, "Bạn chưa đăng nhập or phiên kết thúc", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginActivity.class));
