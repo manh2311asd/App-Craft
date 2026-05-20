@@ -14,3 +14,8 @@
 .cxx
 local.properties
 .env
+
+# Ignore reports
+BaoCao*.md
+Báo cáo*.docx
+*.docx
