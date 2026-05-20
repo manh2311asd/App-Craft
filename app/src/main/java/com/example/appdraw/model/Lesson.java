@@ -2,6 +2,11 @@ package com.example.appdraw.model;
 
 import java.util.List;
 
+/**
+ * Lớp đại diện cho một Bài học (Lesson) trong hệ thống App-Draw.
+ * Được thiết kế và quản lý bởi Lê Thùy Linh.
+ * Lớp này ánh xạ trực tiếp với Collection "Lessons" trên Firestore.
+ */
 public class Lesson {
     private String id;
     private String title;
@@ -17,6 +22,9 @@ public class Lesson {
     private List<Step> steps;
     private long createdAt; // Thời gian tạo khóa học
 
+    /**
+     * Constructor mặc định cần thiết cho Firestore để deserialize dữ liệu.
+     */
     public Lesson() {
     }
 
@@ -61,6 +69,10 @@ public class Lesson {
     public long getCreatedAt() { return createdAt; }
     public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
 
+    /**
+     * Lớp nội bộ đại diện cho một Bước học (Step) trong Bài học.
+     * Mỗi bài học có thể bao gồm nhiều bước vẽ chi tiết.
+     */
     public static class Step {
         private String title;
         private String description;

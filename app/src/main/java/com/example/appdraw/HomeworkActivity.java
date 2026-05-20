@@ -14,6 +14,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+/**
+ * Activity xử lý Nộp bài Thực hành (UC-11).
+ * Người thực hiện: Lê Thùy Linh.
+ * Hỗ trợ người dùng chọn ảnh từ thư viện hoặc trích xuất trực tiếp ảnh dạng Base64 
+ * từ màn hình Drawing Canvas để nộp bài và tự động chia sẻ lên mạng xã hội.
+ */
 public class HomeworkActivity extends AppCompatActivity {
 
     private ImageView ivUploadedImage;
@@ -186,6 +192,10 @@ public class HomeworkActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Đánh dấu Bài học là hoàn thành và lưu ảnh bài nộp (Base64) lên Firestore.
+     * Cập nhật bản ghi tiến độ vào Collection "lessonProgress".
+     */
     private void markLessonCompleted() {
         if (!"guest".equals(uid)) {
             java.util.Map<String, Object> data = new java.util.HashMap<>();
@@ -255,6 +265,10 @@ public class HomeworkActivity extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
+    /**
+     * Hiển thị Dialog thông báo Nộp bài thành công và cung cấp tùy chọn
+     * tự động chia sẻ tác phẩm vừa vẽ lên Bảng tin cộng đồng (Feed).
+     */
     private void showSuccessDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

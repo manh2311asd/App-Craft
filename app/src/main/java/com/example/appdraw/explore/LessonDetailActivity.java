@@ -27,6 +27,11 @@ import android.widget.Toast;
 import com.example.appdraw.HomeworkActivity;
 import com.example.appdraw.R;
 
+/**
+ * Activity hiển thị chi tiết Bài học và Hướng dẫn từng bước vẽ (UC-09).
+ * Người thực hiện: Lê Thùy Linh.
+ * Xử lý tải thông tin bài học từ Firestore, hiển thị Video từng bước, và cho phép Mentor chỉnh sửa bài.
+ */
 public class LessonDetailActivity extends AppCompatActivity {
 
     private int currentStep = 0; // 0: Overview, 1-4: Steps
@@ -252,6 +257,10 @@ public class LessonDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Lấy tiến trình học tập của người dùng từ Firestore (Collection "lessonProgress").
+     * API Firestore: db.collection("Users").document(uid).collection("lessonProgress").
+     */
     private void fetchProgressFromFirestore() {
         if ("guest".equals(uid)) {
             applyLessonStatus();
@@ -282,6 +291,9 @@ public class LessonDetailActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Lưu tiến trình học tập hiện tại của người dùng lên Firestore.
+     */
     private void saveProgressToFirestore() {
         if ("guest".equals(uid))
             return;
@@ -578,6 +590,10 @@ public class LessonDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Tải dữ liệu chi tiết bài học từ Firestore (Collection "Lessons").
+     * Nếu không tìm thấy, hệ thống sẽ tạo dữ liệu giả lập để hiển thị thử nghiệm.
+     */
     private void fetchLessonData() {
         String lessonId = getIntent().getStringExtra("LESSON_ID");
         if (lessonId == null)
@@ -798,19 +814,19 @@ public class LessonDetailActivity extends AppCompatActivity {
             return R.drawable.mau_nuoc;
         String lower = name.toLowerCase().trim();
         if (lower.contains("bút chì hb"))
-            return R.drawable.but_chi_hb;
+            return R.drawable.ic_brush_pencil;
         if (lower.contains("giấy a4 trơn"))
-            return R.drawable.giay_a4_tron;
+            return R.drawable.giay_ve;
         if (lower.contains("gôm tẩy") || lower.contains("tẩy"))
             return R.drawable.gom_tay;
         if (lower.contains("bút chì kim"))
-            return R.drawable.but_chi_kim;
+            return R.drawable.ic_brush_pencil;
         if (lower.contains("bút line"))
-            return R.drawable.but_line;
+            return R.drawable.ic_brush_marker;
         if (lower.contains("màu marker") || lower.contains("màu market"))
-            return R.drawable.mau_market;
+            return R.drawable.ic_brush_marker;
         if (lower.contains("giấy trơn"))
-            return R.drawable.giay_tron;
+            return R.drawable.giay_ve;
         if (lower.contains("giấy 300gsm") || lower.contains("300gsm"))
             return R.drawable.giay_300gsm;
         if (lower.contains("cọ dạng tròn") || lower.contains("tròn"))

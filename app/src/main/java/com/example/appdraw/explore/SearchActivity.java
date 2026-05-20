@@ -30,6 +30,11 @@ import android.content.SharedPreferences;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+/**
+ * Activity xử lý tìm kiếm và bộ lọc (UC-04).
+ * Người thực hiện: Lê Thùy Linh.
+ * Hỗ trợ tìm kiếm Bài học, Dự án và Nghệ sĩ từ cơ sở dữ liệu Firestore.
+ */
 public class SearchActivity extends AppCompatActivity {
 
     private EditText etSearch;
@@ -243,6 +248,11 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
+    /**
+     * Thực hiện truy vấn tìm kiếm dữ liệu (Bài học, Dự án, Nghệ sĩ) từ Firestore
+     * dựa trên từ khóa người dùng nhập vào.
+     * @param query Từ khóa tìm kiếm
+     */
     private void performSearch(String query) {
         if (query.isEmpty()) {
             llSuggestions.setVisibility(View.VISIBLE);
@@ -377,6 +387,11 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loại bỏ dấu tiếng Việt (Normalizer) để hỗ trợ tìm kiếm không dấu.
+     * @param s Chuỗi cần chuẩn hóa
+     * @return Chuỗi đã loại bỏ dấu tiếng Việt
+     */
     private String removeAccents(String s) {
         if (s == null)
             return "";

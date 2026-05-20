@@ -34,6 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Activity dành cho Mentor để Tạo và Xuất bản Bài học mới (UC-19).
+ * Người thực hiện: Lê Thùy Linh.
+ * Xử lý nhập thông tin khóa học, chọn ảnh bìa (mã hóa Base64) và đẩy dữ liệu lên Firestore.
+ */
 public class CreateLessonActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 71;
@@ -157,6 +162,13 @@ public class CreateLessonActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Mã hóa ảnh bìa khóa học thành chuỗi Base64 và tiến hành lưu dữ liệu
+     * bài học mới (Lesson) lên Firestore.
+     * @param title Tiêu đề bài học
+     * @param desc Mô tả bài học
+     * @param durationStr Thời lượng dự kiến
+     */
     private void uploadImageAndSaveLesson(String title, String desc, String durationStr) {
         try {
             Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);

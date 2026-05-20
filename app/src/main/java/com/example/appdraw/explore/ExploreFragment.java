@@ -13,6 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.appdraw.R;
 
+/**
+ * Fragment hiển thị trang Khám phá (Explore) của ứng dụng App-Draw.
+ * Người thực hiện: Lê Thùy Linh (UC-04, UC-08).
+ * Quản lý giao diện tìm kiếm, các danh mục bài học động và danh sách tác phẩm nổi bật (Trending).
+ */
 public class ExploreFragment extends Fragment {
 
     @Nullable
@@ -56,6 +61,10 @@ public class ExploreFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Khởi tạo các sự kiện cho các khối (chip) phân loại danh mục (Chủ đề, Kỹ thuật...).
+     * @param view View gốc của Fragment chứa các chip.
+     */
     private void setupCategoryChips(View view) {
         View chipTopic = view.findViewById(R.id.chip_topic);
         View chipTechnique = view.findViewById(R.id.chip_technique);
@@ -74,6 +83,10 @@ public class ExploreFragment extends Fragment {
             chipLevel.setOnClickListener(v -> Toast.makeText(getContext(), "Chọn Level", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Tải và hiển thị danh sách các Danh mục học tập từ Firestore (Collection "Categories").
+     * @param view View gốc của Fragment.
+     */
     private void setupDynamicCategories(View view) {
         android.widget.LinearLayout container = view.findViewById(R.id.ll_categories_container);
         if (container == null)
@@ -190,6 +203,12 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    /**
+     * Tải và hiển thị danh sách các tác phẩm nghệ thuật nổi bật (Trending) 
+     * dựa trên lượt thích (likesCount) từ Firestore (Collection "Posts").
+     * API Firestore được gọi: db.collection("Posts").orderBy("likesCount").
+     * @param view View gốc của Fragment.
+     */
     private void setupTrendingData(View view) {
         android.widget.LinearLayout container = view.findViewById(R.id.ll_trending_container);
         if (container == null) return;
@@ -275,6 +294,11 @@ public class ExploreFragment extends Fragment {
             });
     }
 
+    /**
+     * Tải và hiển thị danh sách các Chuyên gia (Mentor) động từ Firestore.
+     * API Firestore được gọi: db.collection("Users").whereEqualTo("role", "mentor").
+     * @param view View gốc của Fragment.
+     */
     private void setupDynamicMentors(View view) {
         android.widget.LinearLayout container = view.findViewById(R.id.ll_mentors_container);
         if (container == null)
