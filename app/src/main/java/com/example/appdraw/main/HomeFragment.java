@@ -20,8 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import java.util.Map;
 
-import com.example.appdraw.NotificationsActivity;
-import com.example.appdraw.ProfileActivity;
+import com.example.appdraw.notification.NotificationsActivity;
+import com.example.appdraw.profile.ProfileActivity;
 import com.example.appdraw.R;
 import com.example.appdraw.challenge.ChallengeActivity;
 import com.example.appdraw.challenge.ChallengeDetailActivity;

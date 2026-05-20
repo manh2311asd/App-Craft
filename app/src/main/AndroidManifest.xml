@@ -78,7 +78,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".HomeworkActivity"
+            android:name=".explore.HomeworkActivity"
             android:exported="false" />
         <activity
             android:name=".community.PostDetailActivity"
@@ -90,7 +90,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".ProfileActivity"
+            android:name=".profile.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".project.ProjectDetailActivity"
@@ -102,7 +102,7 @@
             android:name=".challenge.ChallengeDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationsActivity"
+            android:name=".notification.NotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".explore.SearchActivity"
@@ -118,7 +118,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".CreateProjectActivity"
+            android:name=".project.CreateProjectActivity"
             android:exported="false" />
         <activity
             android:name=".challenge.CreateChallengeActivity"
@@ -180,7 +180,7 @@
             android:name=".explore.TrendingDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".profile.EditProfileActivity"
             android:exported="false" />
     </application>
 

@@ -1,5 +1,7 @@
 package com.example.appdraw;
 
+import com.example.appdraw.profile.ProfileActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

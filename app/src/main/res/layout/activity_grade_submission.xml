@@ -40,7 +40,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/ll_grade_student_profile"
+                android:id="@+id/ll_grade_user_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -52,7 +52,7 @@
                 android:layout_marginBottom="16dp">
                 
                 <ImageView
-                    android:id="@+id/iv_grade_student_avatar"
+                    android:id="@+id/iv_grade_user_avatar"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_default_user" />
@@ -63,10 +63,10 @@
                     android:layout_marginStart="12dp"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_grade_student_name"
+                        android:id="@+id/tv_grade_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tên học viên"
+                        android:text="Tên user"
                         android:textColor="#1A1A1A"
                         android:textStyle="bold" />
                     <TextView
@@ -98,7 +98,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_bg_white"
                 android:padding="16dp"
-                android:text="Mô tả của học viên..."
+                android:text="Mô tả của user..."
                 android:textColor="#333333" />
 
             <LinearLayout
@@ -160,7 +160,7 @@
                 android:background="@drawable/rounded_bg_white"
                 android:gravity="top"
                 android:padding="16dp"
-                android:hint="Nhập nhận xét chi tiết giúp học viên cải thiện..."
+                android:hint="Nhập nhận xét chi tiết giúp user cải thiện..."
                 android:textSize="14sp"
                 android:inputType="textMultiLine" />
 
