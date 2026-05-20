@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.appdraw.R;
-import com.example.appdraw.ZoomDrawingView;
+import com.example.appdraw.drawing.ZoomDrawingView;
 
 /**
  * Màn hình Vẽ tác phẩm trên Canvas (UC-10).
