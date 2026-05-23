@@ -25,8 +25,8 @@ public class LiveActivity extends AppCompatActivity {
         String userID = getIntent().getStringExtra("USER_ID");
         String userName = getIntent().getStringExtra("USER_NAME");
 
-        long appID = 1789482713L;
-        String appSign = "0b541e07e352f0a8438a7d9f0f4e329b1e0093bedd72d6f9e0e59b27e68e358b";
+        long appID = 1191129640L;
+        String appSign = "850454a24044d54c2f55ff789b73914b1390f132496a8b274d8d874a98e03d33";
 
         ZegoUIKitPrebuiltLiveStreamingConfig config;
         if (isHost) {

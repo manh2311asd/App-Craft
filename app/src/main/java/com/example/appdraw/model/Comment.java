@@ -10,6 +10,9 @@ public class Comment {
     private String uid;
     private String content;
     private long createdAt;
+    private int likesCount = 0;
+    private java.util.List<String> likedBy = new java.util.ArrayList<>();
+    private String parentId = null;
 
     public Comment() {}
 
@@ -28,4 +31,10 @@ public class Comment {
     public void setContent(String content) { this.content = content; }
     public long getCreatedAt() { return createdAt; }
     public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+    public int getLikesCount() { return likesCount; }
+    public void setLikesCount(int likesCount) { this.likesCount = likesCount; }
+    public java.util.List<String> getLikedBy() { return likedBy; }
+    public void setLikedBy(java.util.List<String> likedBy) { this.likedBy = likedBy; }
+    public String getParentId() { return parentId; }
+    public void setParentId(String parentId) { this.parentId = parentId; }
 }

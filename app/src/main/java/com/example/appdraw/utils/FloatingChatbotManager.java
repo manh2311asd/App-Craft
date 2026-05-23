@@ -45,6 +45,7 @@ public class FloatingChatbotManager implements Application.ActivityLifecycleCall
     private boolean isExcluded(Activity activity) {
         String name = activity.getClass().getSimpleName();
         return name.equals("SplashActivity") ||
+               name.equals("MainActivity") ||
                name.equals("ChatActivity") || 
                name.equals("LoginOptionsActivity") || 
                name.equals("LoginActivity") ||
@@ -64,6 +65,7 @@ public class FloatingChatbotManager implements Application.ActivityLifecycleCall
                name.equals("CreateProjectActivity") ||
                name.equals("NotificationsActivity") ||
                name.equals("PostDetailActivity") ||
+               name.equals("CreatePostActivity") ||
                name.equals("DoingProjectDetailActivity") ||
                name.equals("SearchActivity") ||
                name.equals("LessonListActivity") ||

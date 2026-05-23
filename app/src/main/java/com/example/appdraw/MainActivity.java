@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         navCommunity.setOnClickListener(v -> {
             loadFragment(new CommunityFragment());
             updateNavUI(2);
-            FloatingChatbotManager.getInstance().setVisibility(true);
+            FloatingChatbotManager.getInstance().setVisibility(false);
         });
 
         navProfile.setOnClickListener(v -> {

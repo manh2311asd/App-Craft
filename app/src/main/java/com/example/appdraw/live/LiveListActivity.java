@@ -77,7 +77,7 @@ public class LiveListActivity extends AppCompatActivity {
         }
 
         fabCreateLive.setOnClickListener(v -> {
-            startHostLivestream();
+            showCreateLiveDialog();
         });
 
         listenForLiveRooms();
@@ -124,14 +124,34 @@ public class LiveListActivity extends AppCompatActivity {
         });
     }
 
-    private void startHostLivestream() {
+    private void showCreateLiveDialog() {
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_create_live, null);
+        dialog.setContentView(view);
+        
+        com.google.android.material.textfield.TextInputEditText etTitle = view.findViewById(R.id.et_live_title);
+        com.google.android.material.button.MaterialButton btnStart = view.findViewById(R.id.btn_start_live);
+        
+        btnStart.setOnClickListener(v -> {
+            String title = etTitle.getText() != null ? etTitle.getText().toString().trim() : "";
+            if (title.isEmpty()) {
+                title = "Livestream của " + currentUserName;
+            }
+            dialog.dismiss();
+            startHostLivestream(title);
+        });
+        
+        dialog.show();
+    }
+
+    private void startHostLivestream(String title) {
         // Tạo Live ID ngẫu nhiên hoặc dùng UID làm host
         String liveID = "room_" + currentUserID;
         
         LiveRoom myRoom = new LiveRoom();
         myRoom.hostId = currentUserID;
         myRoom.hostName = currentUserName;
-        myRoom.roomName = "Livestream của " + currentUserName;
+        myRoom.roomName = title;
         // Optionally add an avatar
         
         db.collection("Livestreams").document(liveID).set(myRoom).addOnSuccessListener(aVoid -> {

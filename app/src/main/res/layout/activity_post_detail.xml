@@ -29,6 +29,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="90dp"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -58,6 +60,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold"/>
                 <TextView
+                    android:id="@+id/tv_comment_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nổi bật ▼"
@@ -77,36 +80,71 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Comment Input -->
+    <!-- Comment Input Area -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#FFFFFF"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
+        android:orientation="vertical"
         android:elevation="12dp"
-        android:gravity="center_vertical">
-        <EditText
-            android:id="@+id/et_comment"
-            android:layout_width="0dp"
+        android:background="#FFFFFF">
+        
+        <!-- Reply Status Bar -->
+        <LinearLayout
+            android:id="@+id/ll_reply_status"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Viết bình luận..."
-            android:background="@drawable/bg_pill_gray"
+            android:orientation="horizontal"
+            android:background="#F0F2F5"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="10dp"
-            android:textSize="14sp"
-            android:textColorHint="#888888"
-            android:backgroundTint="#F0F2F5"/>
-        <ImageView
-            android:id="@+id/btn_send_comment"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="12dp"
-            android:src="@android:drawable/ic_menu_send"
-            android:padding="6dp"
-            app:tint="#4272D0"/>
+            android:paddingVertical="8dp"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_reply_status"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Đang trả lời Người dùng"
+                android:textColor="#555555"
+                android:textSize="12sp"/>
+            <ImageView
+                android:id="@+id/btn_cancel_reply"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="#888888"
+                android:padding="2dp"/>
+        </LinearLayout>
+
+        <!-- Input Field -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:gravity="center_vertical">
+            <EditText
+                android:id="@+id/et_comment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Viết bình luận..."
+                android:background="@drawable/bg_pill_gray"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp"
+                android:textSize="14sp"
+                android:textColorHint="#888888"
+                android:backgroundTint="#F0F2F5"/>
+            <ImageView
+                android:id="@+id/btn_send_comment"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="12dp"
+                android:src="@android:drawable/ic_menu_send"
+                android:padding="6dp"
+                app:tint="#4272D0"/>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
