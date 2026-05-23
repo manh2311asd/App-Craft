@@ -1,5 +1,7 @@
 package com.example.appdraw.event;
 
+import com.example.appdraw.R;
+
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -55,3 +57,4 @@ public class TicketActivity extends AppCompatActivity {
         btnRemindMe.setText("Đã đặt nhắc");
     }
 }
+

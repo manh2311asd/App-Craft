@@ -1,5 +1,10 @@
 package com.example.appdraw.utils;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class HomeworkHelper {
 
     public static class HomeworkDetails {

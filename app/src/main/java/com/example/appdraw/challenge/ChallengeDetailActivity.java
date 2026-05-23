@@ -47,8 +47,25 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             if (!shots.isEmpty()) {
                 com.google.firebase.firestore.DocumentSnapshot doc = shots.getDocuments().get(0);
                 Long endTime = doc.getLong("endTimeMillis");
-                if (endTime != null && System.currentTimeMillis() > endTime) {
-                    isEnded = true;
+                if (endTime != null) {
+                    if (System.currentTimeMillis() > endTime) isEnded = true;
+                } else if (deadlineStr != null && deadlineStr.contains("-")) {
+                    String[] parts = deadlineStr.split("-");
+                    if (parts.length > 1) {
+                        try {
+                            String endDateStr = parts[1].trim();
+                            java.text.SimpleDateFormat format = new java.text.SimpleDateFormat(endDateStr.length() > 5 ? "dd/MM/yyyy" : "dd/MM", java.util.Locale.getDefault());
+                            java.util.Date date = format.parse(endDateStr);
+                            if (date != null) {
+                                java.util.Calendar cal = java.util.Calendar.getInstance();
+                                cal.setTime(date);
+                                cal.set(java.util.Calendar.YEAR, java.util.Calendar.getInstance().get(java.util.Calendar.YEAR));
+                                cal.set(java.util.Calendar.HOUR_OF_DAY, 23);
+                                cal.set(java.util.Calendar.MINUTE, 59);
+                                if (System.currentTimeMillis() > cal.getTimeInMillis()) isEnded = true;
+                            }
+                        } catch (Exception e) {}
+                    }
                 }
                 String authorId = doc.getString("authorId");
                 String author = doc.getString("author");
@@ -146,12 +163,6 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
             } else {
-                if (isEnded) {
-                    btnJoin.setVisibility(android.view.View.GONE);
-                    llJoinedStatus.setVisibility(android.view.View.GONE);
-                    if (llTopStatusSection != null) llTopStatusSection.setVisibility(android.view.View.GONE);
-                    return;
-                }
                 // USER VIEW
                 db.collection("Users").document(user.getUid()).collection("joinedChallenges").document(title)
                     .addSnapshotListener((doc, e) -> {
@@ -166,13 +177,22 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                             if ("JOINED".equals(status)) {
                                 tvSubmissionStatus.setText("Bài của bạn : Chưa nộp");
                                 tvSubmissionStatus.setTextColor(android.graphics.Color.parseColor("#E67E22"));
-                                btnSubmit.setText("NỘP BÀI");
-                                btnSubmit.setEnabled(true);
-                                btnSubmit.setOnClickListener(v -> {
-                                    android.content.Intent intent = new android.content.Intent(this, SubmitChallengeActivity.class);
-                                    intent.putExtra("CHALLENGE_TITLE", title);
-                                    startActivity(intent);
-                                });
+                                
+                                if (isEnded) {
+                                    btnSubmit.setText("ĐÃ HẾT HẠN");
+                                    btnSubmit.setEnabled(false);
+                                    btnSubmit.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#9E9E9E")));
+                                    if (tvSubmissionStatusInfo != null) tvSubmissionStatusInfo.setText("Bạn chưa nộp bài và thử thách đã kết thúc");
+                                } else {
+                                    btnSubmit.setText("NỘP BÀI");
+                                    btnSubmit.setEnabled(true);
+                                    btnSubmit.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#4272D0")));
+                                    btnSubmit.setOnClickListener(v -> {
+                                        android.content.Intent intent = new android.content.Intent(this, SubmitChallengeActivity.class);
+                                        intent.putExtra("CHALLENGE_TITLE", title);
+                                        startActivity(intent);
+                                    });
+                                }
                             } else if ("SUBMITTED".equals(status)) {
                                 tvSubmissionStatus.setText("Bài của bạn : Đang chờ chấm");
                                 tvSubmissionStatus.setTextColor(android.graphics.Color.parseColor("#4272D0"));
@@ -203,13 +223,18 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                             // NOT JOINED
                             llJoinedStatus.setVisibility(android.view.View.GONE);
                             if (llTopStatusSection != null) llTopStatusSection.setVisibility(android.view.View.GONE);
-                            btnJoin.setVisibility(android.view.View.VISIBLE);
-                            btnJoin.setText("THAM GIA THỬ THÁCH");
-                            btnJoin.setOnClickListener(v -> {
-                                java.util.Map<String, Object> data = new java.util.HashMap<>();
-                                data.put("status", "JOINED");
-                                db.collection("Users").document(user.getUid()).collection("joinedChallenges").document(title).set(data);
-                            });
+                            
+                            if (isEnded) {
+                                btnJoin.setVisibility(android.view.View.GONE);
+                            } else {
+                                btnJoin.setVisibility(android.view.View.VISIBLE);
+                                btnJoin.setText("THAM GIA THỬ THÁCH");
+                                btnJoin.setOnClickListener(v -> {
+                                    java.util.Map<String, Object> data = new java.util.HashMap<>();
+                                    data.put("status", "JOINED");
+                                    db.collection("Users").document(user.getUid()).collection("joinedChallenges").document(title).set(data);
+                                });
+                            }
                         }
                     });
             }

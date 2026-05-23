@@ -14,6 +14,11 @@ import com.example.appdraw.model.Artwork;
 
 import java.util.List;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class ArtworkAdapter extends RecyclerView.Adapter<ArtworkAdapter.ViewHolder> {
     private List<Artwork> artworks;
     private OnItemClickListener listener;
@@ -22,9 +27,19 @@ public class ArtworkAdapter extends RecyclerView.Adapter<ArtworkAdapter.ViewHold
         void onItemClick(Artwork artwork);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(Artwork artwork);
+    }
+
+    private OnItemLongClickListener longClickListener;
+
     public ArtworkAdapter(List<Artwork> artworks, OnItemClickListener listener) {
         this.artworks = artworks;
         this.listener = listener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -72,6 +87,22 @@ public class ArtworkAdapter extends RecyclerView.Adapter<ArtworkAdapter.ViewHold
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(artwork);
         });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onItemLongClick(artwork);
+                return true;
+            }
+            return false;
+        });
+
+        if (holder.btnOptions != null) {
+            holder.btnOptions.setOnClickListener(v -> {
+                if (longClickListener != null) {
+                    longClickListener.onItemLongClick(artwork);
+                }
+            });
+        }
     }
 
     @Override
@@ -80,12 +111,13 @@ public class ArtworkAdapter extends RecyclerView.Adapter<ArtworkAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivThumbnail;
+        ImageView ivThumbnail, btnOptions;
         TextView tvTitle, tvStatus, tvDate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivThumbnail = itemView.findViewById(R.id.iv_artwork);
+            btnOptions = itemView.findViewById(R.id.btn_artwork_options);
             tvTitle = itemView.findViewById(R.id.tv_artwork_title);
             tvStatus = itemView.findViewById(R.id.tv_artwork_status);
             tvDate = itemView.findViewById(R.id.tv_artwork_date);

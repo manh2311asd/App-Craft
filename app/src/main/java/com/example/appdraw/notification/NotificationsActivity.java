@@ -1,5 +1,7 @@
 package com.example.appdraw.notification;
 
+import com.example.appdraw.R;
+
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -82,3 +84,4 @@ public class NotificationsActivity extends AppCompatActivity {
                 });
     }
 }
+

@@ -29,6 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Đặng Thị Hồng Vân
+ * @version 1.0
+ */
 public class SubmissionDetailActivity extends AppCompatActivity {
     private String submissionId;
     private FirebaseFirestore db;
@@ -108,7 +113,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
             ImageView ivArtwork = includedView.findViewById(R.id.iv_public_artwork);
             if (ivArtwork != null && imageUrl != null && !imageUrl.isEmpty()) {
                 byte[] decodedString = android.util.Base64.decode(imageUrl.split(",")[1], android.util.Base64.DEFAULT);
-                Glide.with(this).load(decodedString).centerCrop().into(ivArtwork);
+                Glide.with(this).asBitmap().load(decodedString).fitCenter().into(ivArtwork);
             }
 
             // Score logic

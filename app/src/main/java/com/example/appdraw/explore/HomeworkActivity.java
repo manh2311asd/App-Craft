@@ -1,5 +1,7 @@
 package com.example.appdraw.explore;
 
+import com.example.appdraw.R;
+
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -314,3 +316,4 @@ public class HomeworkActivity extends AppCompatActivity {
         dialog.show();
     }
 }
+

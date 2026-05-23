@@ -18,6 +18,11 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class RegisterLevelActivity extends AppCompatActivity {
 
     private String selectedRole = null;

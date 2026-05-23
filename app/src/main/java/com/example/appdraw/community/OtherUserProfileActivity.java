@@ -17,6 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import android.view.View;
 import android.widget.LinearLayout;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Cao Đức Mạnh
+ * @version 1.0
+ */
 public class OtherUserProfileActivity extends AppCompatActivity {
 
     private boolean isFollowing = false;
@@ -212,8 +217,8 @@ public class OtherUserProfileActivity extends AppCompatActivity {
         if (rvProfileArtworks != null) {
             rvProfileArtworks.setLayoutManager(new androidx.recyclerview.widget.StaggeredGridLayoutManager(2, androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL));
             postAdapter[0] = new com.example.appdraw.community.PostMediaAdapter(postList, post -> {
-                Intent intent = new Intent(this, com.example.appdraw.community.PostDetailActivity.class);
-                intent.putExtra("POST_ID", post.getId());
+                Intent intent = new Intent(this, FullScreenImageActivity.class);
+                intent.putExtra("IMAGE_URL", post.getImageUrl());
                 startActivity(intent);
             });
             rvProfileArtworks.setAdapter(postAdapter[0]);

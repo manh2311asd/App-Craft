@@ -12,6 +12,11 @@ import com.example.appdraw.model.Lesson;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class AddLessonStepActivity extends AppCompatActivity {
 
     private TextInputEditText etTitle, etDesc, etVideoUrl;

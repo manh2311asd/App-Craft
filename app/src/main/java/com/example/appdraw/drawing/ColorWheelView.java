@@ -11,6 +11,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class ColorWheelView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

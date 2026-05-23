@@ -40,6 +40,11 @@ import java.util.List;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class HomeFragment extends Fragment {
 
     private ListenerRegistration challengeListenerReg;
@@ -112,6 +117,36 @@ public class HomeFragment extends Fragment {
                                     ivAvatarHome.setPadding(0, 0, 0, 0);
                                     Glide.with(getContext()).load(R.drawable.ic_default_user).circleCrop()
                                             .into(ivAvatarHome);
+                                }
+                            } else {
+                                // Fallback cho user chưa có profile map
+                                String name = documentSnapshot.getString("username");
+                                if (name != null && !name.isEmpty()) {
+                                    String shortName = name;
+                                    if (name.contains(" ")) {
+                                        shortName = name.substring(name.lastIndexOf(" ") + 1);
+                                    }
+                                    if (tvGreeting != null)
+                                        tvGreeting.setText("Chào " + shortName + "!");
+                                }
+                                
+                                String avatarUrl = documentSnapshot.getString("avatar_url");
+                                if (avatarUrl == null || avatarUrl.isEmpty()) avatarUrl = documentSnapshot.getString("avatar");
+                                if (avatarUrl == null || avatarUrl.isEmpty()) avatarUrl = documentSnapshot.getString("photoUrl");
+                                
+                                if (ivAvatarHome != null && getContext() != null) {
+                                    ivAvatarHome.setPadding(0, 0, 0, 0);
+                                    if (avatarUrl != null && !avatarUrl.isEmpty()
+                                            && avatarUrl.startsWith("data:image")) {
+                                        byte[] b = android.util.Base64.decode(avatarUrl.split(",")[1],
+                                                android.util.Base64.DEFAULT);
+                                        Glide.with(getContext()).load(b).circleCrop().into(ivAvatarHome);
+                                    } else if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                                        Glide.with(getContext()).load(avatarUrl).circleCrop().into(ivAvatarHome);
+                                    } else {
+                                        Glide.with(getContext()).load(R.drawable.ic_default_user).circleCrop()
+                                                .into(ivAvatarHome);
+                                    }
                                 }
                             }
 
@@ -968,7 +1003,21 @@ public class HomeFragment extends Fragment {
             String uid = (auth.getCurrentUser() != null) ? auth.getCurrentUser().getUid() : null;
 
             int count = 0;
-            for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+            java.util.List<com.google.firebase.firestore.DocumentSnapshot> docs = new java.util.ArrayList<>(queryDocumentSnapshots.getDocuments());
+            docs.sort((doc1, doc2) -> {
+                Long end1 = doc1.getLong("endTimeMillis");
+                Long end2 = doc2.getLong("endTimeMillis");
+                if (end1 == null) end1 = Long.MAX_VALUE;
+                if (end2 == null) end2 = Long.MAX_VALUE;
+                long now = System.currentTimeMillis();
+                boolean a1 = end1 > now;
+                boolean a2 = end2 > now;
+                if (a1 && !a2) return -1;
+                if (!a1 && a2) return 1;
+                return end1.compareTo(end2);
+            });
+
+            for (com.google.firebase.firestore.DocumentSnapshot doc : docs) {
                 if (count >= 1)
                     break; // Only display 1 challenge dynamically
 
@@ -1033,8 +1082,9 @@ public class HomeFragment extends Fragment {
                             try {
                                 String base64Data = imageUrl.substring(imageUrl.indexOf(",") + 1);
                                 byte[] b = android.util.Base64.decode(base64Data, android.util.Base64.DEFAULT);
-                                Glide.with(this).load(b).centerCrop().into(ivImage);
+                                Glide.with(this).asBitmap().load(b).centerCrop().error(R.drawable.ve_hoa_mau_nuoc).into(ivImage);
                             } catch (Exception e) {
+                                Glide.with(this).load(R.drawable.ve_hoa_mau_nuoc).centerCrop().into(ivImage);
                             }
                         } else {
                             Glide.with(this).load(imageUrl).centerCrop().into(ivImage);

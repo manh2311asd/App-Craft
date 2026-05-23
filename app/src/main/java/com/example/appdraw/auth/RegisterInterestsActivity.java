@@ -9,6 +9,11 @@ import com.example.appdraw.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class RegisterInterestsActivity extends AppCompatActivity {
     
     private final java.util.List<String> selectedInterests = new java.util.ArrayList<>();

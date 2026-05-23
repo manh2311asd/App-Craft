@@ -13,6 +13,11 @@ import com.example.appdraw.model.Post;
 
 import java.util.List;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Cao Đức Mạnh
+ * @version 1.0
+ */
 public class PostMediaAdapter extends RecyclerView.Adapter<PostMediaAdapter.ViewHolder> {
     private List<Post> posts;
     private OnItemClickListener listener;

@@ -1,5 +1,7 @@
 package com.example.appdraw.notification;
 
+import com.example.appdraw.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
@@ -25,6 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Cao Đức Mạnh
+ * @version 1.0
+ */
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
     private List<Notification> notificationList;
     private Context context;
@@ -136,7 +143,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.itemView.setOnClickListener(v -> {
             // Mark as read in Firestore
             FirebaseFirestore.getInstance().collection("Notifications").document(notif.getId()).update("isRead", true);
-            holder.itemView.setBackgroundColor(android.graphics.Color.WHITE);
+            holder.itemView.setBackgroundResource(R.drawable.ripple_bg_white);
 
             if ("LIKE".equals(notif.getType()) || "COMMENT".equals(notif.getType())) {
                 Intent intent = new Intent(context, PostDetailActivity.class);
@@ -153,9 +160,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         });
 
         if (!notif.isRead()) {
-            holder.itemView.setBackgroundColor(android.graphics.Color.parseColor("#E8F0FE"));
+            holder.itemView.setBackgroundResource(R.drawable.ripple_bg_white);
         } else {
-            holder.itemView.setBackgroundColor(android.graphics.Color.WHITE);
+            holder.itemView.setBackgroundResource(R.drawable.ripple_bg_white);
         }
     }
 
@@ -176,3 +183,4 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 }
+

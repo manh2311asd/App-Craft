@@ -20,6 +20,11 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class RegisterProfileActivity extends AppCompatActivity {
     
     private EditText etFullName, etBio;
@@ -105,6 +110,13 @@ public class RegisterProfileActivity extends AppCompatActivity {
         Map<String, Object> userCommon = new HashMap<>();
         userCommon.put("username", fullName);
         userCommon.put("email", com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("fullName", fullName);
+        profile.put("bio", bio);
+        profile.put("avatarUrl", avatarUrl);
+        userCommon.put("profile", profile);
+
         // role sẽ được set ở bước RegisterLevelActivity
 
         db.collection("Users").document(uid).set(userCommon, SetOptions.merge())

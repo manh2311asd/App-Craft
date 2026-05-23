@@ -1,5 +1,7 @@
 package com.example.appdraw.profile;
 
+import com.example.appdraw.R;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -94,8 +96,8 @@ public class ProfileActivity extends AppCompatActivity {
         if (rvProfileArtworks != null) {
             rvProfileArtworks.setLayoutManager(new androidx.recyclerview.widget.StaggeredGridLayoutManager(2, androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL));
             postAdapter = new com.example.appdraw.community.PostMediaAdapter(postList, post -> {
-                Intent intent = new Intent(this, com.example.appdraw.community.PostDetailActivity.class);
-                intent.putExtra("POST_ID", post.getId());
+                Intent intent = new Intent(this, com.example.appdraw.community.FullScreenImageActivity.class);
+                intent.putExtra("IMAGE_URL", post.getImageUrl());
                 startActivity(intent);
             });
             rvProfileArtworks.setAdapter(postAdapter);
@@ -282,6 +284,7 @@ public class ProfileActivity extends AppCompatActivity {
                         // Tải Avatar
                         String photoUrl = documentSnapshot.getString("photoUrl");
                         if (photoUrl == null || photoUrl.isEmpty()) photoUrl = documentSnapshot.getString("avatar");
+                        if (photoUrl == null || photoUrl.isEmpty()) photoUrl = documentSnapshot.getString("avatar_url");
                         if (photoUrl == null || photoUrl.isEmpty()) {
                             if (user.getPhotoUrl() != null) photoUrl = user.getPhotoUrl().toString();
                         }
@@ -354,6 +357,18 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+                        }
+
+                        // Fallback cho người dùng cũ chưa có 'profile' map
+                        TextView tvNameFallback = findViewById(R.id.tv_profile_name);
+                        TextView tvBioFallback = findViewById(R.id.tv_profile_bio);
+                        if (tvNameFallback != null && (tvNameFallback.getText() == null || tvNameFallback.getText().toString().isEmpty() || tvNameFallback.getText().toString().equals("Tên người dùng"))) {
+                            String rootName = documentSnapshot.getString("username");
+                            if (rootName != null && !rootName.isEmpty()) tvNameFallback.setText(rootName);
+                        }
+                        if (tvBioFallback != null && (tvBioFallback.getText() == null || tvBioFallback.getText().toString().isEmpty())) {
+                            String rootBio = documentSnapshot.getString("bio");
+                            if (rootBio != null && !rootBio.isEmpty()) tvBioFallback.setText(rootBio);
                         }
                         
                         // Nếu vẫn không có ảnh (photoUrl rỗng và avatarUrl rỗng) => dùng màu trắng làm fallback
@@ -543,3 +558,4 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
+

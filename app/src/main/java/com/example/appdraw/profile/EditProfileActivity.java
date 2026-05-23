@@ -1,5 +1,7 @@
 package com.example.appdraw.profile;
 
+import com.example.appdraw.R;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -70,7 +72,7 @@ public class EditProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
         toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -179,3 +181,4 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 }
+

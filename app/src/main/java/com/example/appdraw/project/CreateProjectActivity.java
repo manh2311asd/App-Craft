@@ -1,5 +1,7 @@
 package com.example.appdraw.project;
 
+import com.example.appdraw.R;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -81,3 +83,4 @@ public class CreateProjectActivity extends AppCompatActivity {
         });
     }
 }
+

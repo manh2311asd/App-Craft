@@ -31,7 +31,7 @@
         android:id="@+id/et_artwork_name"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Ví dụ: Hoàng hôn trên núi"
+        android:hint="Nhập tên tác phẩm..."
         android:background="@drawable/rounded_bg_white_border"
         android:paddingHorizontal="16dp"
         android:layout_marginTop="8dp"

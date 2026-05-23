@@ -1,9 +1,16 @@
 package com.example.appdraw.event;
 
+import com.example.appdraw.R;
+
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Đặng Thị Hồng Vân
+ * @version 1.0
+ */
 public class EventRegistrationSuccessActivity extends AppCompatActivity {
 
     @Override
@@ -23,3 +30,4 @@ public class EventRegistrationSuccessActivity extends AppCompatActivity {
         });
     }
 }
+

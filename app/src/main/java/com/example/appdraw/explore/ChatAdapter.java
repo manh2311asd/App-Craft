@@ -16,6 +16,11 @@ import com.example.appdraw.R;
 
 import java.util.List;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
     private final List<GeminiVisionService.ChatMessage> messages;

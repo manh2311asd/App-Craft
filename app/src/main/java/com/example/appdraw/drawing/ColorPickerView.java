@@ -1,5 +1,7 @@
 package com.example.appdraw.drawing;
 
+import com.example.appdraw.R;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +13,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class ColorPickerView extends View {
     private Paint arcPaint;
     private Paint gridPaint;
@@ -173,3 +180,4 @@ public class ColorPickerView extends View {
         return super.onTouchEvent(event);
     }
 }
+

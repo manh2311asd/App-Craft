@@ -10,6 +10,11 @@ import com.example.appdraw.R;
 import com.example.appdraw.model.Note;
 import java.util.List;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
     private List<Note> noteList;
     private OnNoteClickListener listener;

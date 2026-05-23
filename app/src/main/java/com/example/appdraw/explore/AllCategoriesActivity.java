@@ -16,6 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class AllCategoriesActivity extends AppCompatActivity {
     private RecyclerView rvCategories;
     private AllCategoryAdapter adapter;

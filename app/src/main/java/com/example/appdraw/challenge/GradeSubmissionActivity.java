@@ -17,6 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Đặng Thị Hồng Vân
+ * @version 1.0
+ */
 public class GradeSubmissionActivity extends AppCompatActivity {
 
     private String submissionId;
@@ -141,7 +146,7 @@ public class GradeSubmissionActivity extends AppCompatActivity {
 
                 if (ivArtwork != null && imageUrl != null && !imageUrl.isEmpty()) {
                     byte[] decodedString = android.util.Base64.decode(imageUrl.split(",")[1], android.util.Base64.DEFAULT);
-                    Glide.with(this).load(decodedString).centerCrop().into(ivArtwork);
+                    Glide.with(this).asBitmap().load(decodedString).fitCenter().into(ivArtwork);
                 }
                 
                 if (ivAvatar != null) {

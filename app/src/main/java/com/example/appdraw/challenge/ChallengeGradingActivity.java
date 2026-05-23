@@ -6,8 +6,14 @@ import android.view.View;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import com.example.appdraw.R;
 import com.google.android.material.tabs.TabLayout;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Đặng Thị Hồng Vân
+ * @version 1.0
+ */
 public class ChallengeGradingActivity extends AppCompatActivity {
 
     @Override

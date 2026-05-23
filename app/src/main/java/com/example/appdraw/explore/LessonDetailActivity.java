@@ -578,7 +578,7 @@ public class LessonDetailActivity extends AppCompatActivity {
     }
 
     private void openHomework() {
-        Intent intent = new Intent(this, com.example.appdraw.HomeworkActivity.class);
+        Intent intent = new Intent(this, com.example.appdraw.explore.HomeworkActivity.class);
         intent.putExtra("LESSON_TITLE", lessonTitle);
         intent.putExtra("IMAGE_RES", getIntent().getStringExtra("IMAGE_RES"));
         startActivity(intent);

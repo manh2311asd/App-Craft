@@ -61,7 +61,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_upload_artwork"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="wrap_content"
+                android:minHeight="220dp"
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
@@ -100,8 +101,9 @@
                 <ImageView
                     android:id="@+id/iv_artwork_preview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
                     android:visibility="gone"/>
             </com.google.android.material.card.MaterialCardView>
 

@@ -24,12 +24,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.SharedPreferences;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView rvChat;
     private ChatAdapter chatAdapter;
-    private List<GeminiVisionService.ChatMessage> chatHistory;
+    public static List<GeminiVisionService.ChatMessage> globalChatHistory = new ArrayList<>();
     private EditText etMessage;
     private ImageView ivImagePreview;
     
@@ -53,16 +61,26 @@ public class ChatActivity extends AppCompatActivity {
         etMessage = findViewById(R.id.et_message);
         ivImagePreview = findViewById(R.id.iv_image_preview);
         
-        chatHistory = new ArrayList<>();
         
-        // System instruction implicitly inside Gemini is hard, we just add a first model msg greeting.
-        chatHistory.add(new GeminiVisionService.ChatMessage("model", "Chào bạn, tôi là trợ lý Mỹ thuật AI! Bạn có câu hỏi nào về bức tranh của mình không, cứ thoải mái hỏi tôi nhé.", null));
+        loadHistory();
+        
+        if (globalChatHistory.isEmpty()) {
+            globalChatHistory.add(new GeminiVisionService.ChatMessage("model", "Chào bạn, tôi là trợ lý Mỹ thuật AI! Bạn có câu hỏi nào về bức tranh của mình không, cứ thoải mái hỏi tôi nhé.", null));
+            saveHistory();
+        }
 
-        chatAdapter = new ChatAdapter(chatHistory);
+        chatAdapter = new ChatAdapter(globalChatHistory);
         rvChat.setLayoutManager(new LinearLayoutManager(this));
         rvChat.setAdapter(chatAdapter);
 
         geminiService = new GeminiVisionService();
+        
+        findViewById(R.id.btn_clear_chat).setOnClickListener(v -> {
+            globalChatHistory.clear();
+            globalChatHistory.add(new GeminiVisionService.ChatMessage("model", "Chào bạn, tôi là trợ lý Mỹ thuật AI! Bạn có câu hỏi nào về bức tranh của mình không, cứ thoải mái hỏi tôi nhé.", null));
+            saveHistory();
+            chatAdapter.notifyDataSetChanged();
+        });
 
         findViewById(R.id.btn_send).setOnClickListener(v -> sendMessage());
         findViewById(R.id.btn_attach_image).setOnClickListener(v -> openGallery());
@@ -76,9 +94,10 @@ public class ChatActivity extends AppCompatActivity {
 
         // Add user message
         GeminiVisionService.ChatMessage userMsg = new GeminiVisionService.ChatMessage("user", message, selectedBase64Image);
-        chatHistory.add(userMsg);
-        chatAdapter.notifyItemInserted(chatHistory.size() - 1);
-        rvChat.scrollToPosition(chatHistory.size() - 1);
+        globalChatHistory.add(userMsg);
+        chatAdapter.notifyItemInserted(globalChatHistory.size() - 1);
+        rvChat.scrollToPosition(globalChatHistory.size() - 1);
+        saveHistory();
 
         // Reset input
         etMessage.setText("");
@@ -88,14 +107,14 @@ public class ChatActivity extends AppCompatActivity {
 
         // Add loading placeholder
         GeminiVisionService.ChatMessage loadingMsg = new GeminiVisionService.ChatMessage("model", "Đang suy nghĩ...", null);
-        chatHistory.add(loadingMsg);
-        chatAdapter.notifyItemInserted(chatHistory.size() - 1);
-        rvChat.scrollToPosition(chatHistory.size() - 1);
+        globalChatHistory.add(loadingMsg);
+        chatAdapter.notifyItemInserted(globalChatHistory.size() - 1);
+        rvChat.scrollToPosition(globalChatHistory.size() - 1);
 
         List<GeminiVisionService.ChatMessage> apiHistory = new ArrayList<>();
         // Bỏ qua tiếng chào đầu tiên (model) và hành động "Đang suy nghĩ..." cứ cuối mảng (model)
-        for (int i = 1; i < chatHistory.size() - 1; i++) {
-            apiHistory.add(chatHistory.get(i));
+        for (int i = 1; i < globalChatHistory.size() - 1; i++) {
+            apiHistory.add(globalChatHistory.get(i));
         }
 
         // Call Gemini API
@@ -103,15 +122,17 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String reply) {
                 // Replace loading message
-                chatHistory.set(chatHistory.size() - 1, new GeminiVisionService.ChatMessage("model", reply, null));
-                chatAdapter.notifyItemChanged(chatHistory.size() - 1);
-                rvChat.scrollToPosition(chatHistory.size() - 1);
+                globalChatHistory.set(globalChatHistory.size() - 1, new GeminiVisionService.ChatMessage("model", reply, null));
+                chatAdapter.notifyItemChanged(globalChatHistory.size() - 1);
+                rvChat.scrollToPosition(globalChatHistory.size() - 1);
+                saveHistory();
             }
 
             @Override
             public void onError(String error) {
-                chatHistory.set(chatHistory.size() - 1, new GeminiVisionService.ChatMessage("model", "Xin lỗi, đã có lỗi kết nối: " + error, null));
-                chatAdapter.notifyItemChanged(chatHistory.size() - 1);
+                globalChatHistory.set(globalChatHistory.size() - 1, new GeminiVisionService.ChatMessage("model", "Xin lỗi, đã có lỗi kết nối: " + error, null));
+                chatAdapter.notifyItemChanged(globalChatHistory.size() - 1);
+                saveHistory();
             }
         });
     }
@@ -144,5 +165,38 @@ public class ChatActivity extends AppCompatActivity {
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         galleryLauncher.launch(intent);
+    }
+
+    private void saveHistory() {
+        SharedPreferences prefs = getSharedPreferences("chat_prefs", MODE_PRIVATE);
+        JSONArray arr = new JSONArray();
+        for (GeminiVisionService.ChatMessage msg : globalChatHistory) {
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("role", msg.role);
+                obj.put("text", msg.text);
+                if (msg.base64Image != null) {
+                    obj.put("base64Image", msg.base64Image);
+                }
+                arr.put(obj);
+            } catch (Exception e) {}
+        }
+        prefs.edit().putString("history", arr.toString()).apply();
+    }
+
+    private void loadHistory() {
+        SharedPreferences prefs = getSharedPreferences("chat_prefs", MODE_PRIVATE);
+        String historyStr = prefs.getString("history", "[]");
+        globalChatHistory.clear();
+        try {
+            JSONArray arr = new JSONArray(historyStr);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                String role = obj.getString("role");
+                String text = obj.getString("text");
+                String base64Image = obj.has("base64Image") ? obj.getString("base64Image") : null;
+                globalChatHistory.add(new GeminiVisionService.ChatMessage(role, text, base64Image));
+            }
+        } catch (Exception e) {}
     }
 }

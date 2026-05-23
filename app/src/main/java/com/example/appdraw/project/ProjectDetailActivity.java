@@ -100,13 +100,65 @@ public class ProjectDetailActivity extends AppCompatActivity {
             intent.putExtra("STATUS", artwork.getStatus());
             startActivity(intent);
         });
+        adapter.setOnItemLongClickListener(artwork -> {
+            showArtworkOptionsDialog(artwork);
+        });
         rvArtworks.setAdapter(adapter);
 
         FloatingActionButton fab = findViewById(R.id.fab_add_artwork);
         fab.setOnClickListener(v -> createNewArtwork());
 
+        android.widget.ImageView btnChangeCover = findViewById(R.id.btn_change_cover);
+        if (btnChangeCover != null) {
+            btnChangeCover.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                pickImageLauncher.launch(intent);
+            });
+        }
+
         loadArtworks();
     }
+
+    private final androidx.activity.result.ActivityResultLauncher<Intent> pickImageLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    android.net.Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        try {
+                            // Downscale the image to prevent Firestore 1MB limit issues
+                            java.io.InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                            android.graphics.Bitmap originalBitmap = android.graphics.BitmapFactory.decodeStream(inputStream);
+                            
+                            int maxDim = 800;
+                            int width = originalBitmap.getWidth();
+                            int height = originalBitmap.getHeight();
+                            if (width > maxDim || height > maxDim) {
+                                float ratio = Math.min((float) maxDim / width, (float) maxDim / height);
+                                width = Math.round(width * ratio);
+                                height = Math.round(height * ratio);
+                            }
+                            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(originalBitmap, width, height, true);
+                            
+                            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+                            scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, baos);
+                            byte[] data = baos.toByteArray();
+                            String base64Image = "data:image/jpeg;base64," + android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT);
+
+                            if (projectId != null) {
+                                db.collection("Projects").document(projectId).update("coverImageUrl", base64Image)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(this, "Đã cập nhật ảnh bìa", Toast.LENGTH_SHORT).show();
+                                            android.widget.ImageView ivCover = findViewById(R.id.iv_project_cover_detail);
+                                            com.bumptech.glide.Glide.with(this).load(data).centerCrop().into(ivCover);
+                                        });
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(this, "Lỗi tải ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
 
     private void loadArtworks() {
         if (projectId == null) return;
@@ -154,5 +206,53 @@ public class ProjectDetailActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Lỗi tạo bản vẽ", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void showArtworkOptionsDialog(Artwork artwork) {
+        String[] options = {"✏️ Đổi tên tác phẩm", "🗑️ Xóa tác phẩm"};
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Tùy chọn Tác phẩm")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showRenameArtworkDialog(artwork);
+                    } else if (which == 1) {
+                        showDeleteArtworkConfirmDialog(artwork);
+                    }
+                })
+                .show();
+    }
+
+    private void showRenameArtworkDialog(Artwork artwork) {
+        android.widget.EditText input = new android.widget.EditText(this);
+        input.setText(artwork.getTitle());
+        input.setSingleLine(true);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        input.setPadding(padding, padding, padding, padding);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Đổi tên tác phẩm")
+                .setView(input)
+                .setPositiveButton("Lưu", (dialog, which) -> {
+                    String newName = input.getText().toString().trim();
+                    if (!newName.isEmpty()) {
+                        db.collection("Artworks").document(artwork.getId())
+                                .update("title", newName)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Đã đổi tên", Toast.LENGTH_SHORT).show());
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void showDeleteArtworkConfirmDialog(Artwork artwork) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Xóa tác phẩm")
+                .setMessage("Bạn có chắc chắn muốn xóa tác phẩm này vĩnh viễn?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    db.collection("Artworks").document(artwork.getId()).delete()
+                            .addOnSuccessListener(aVoid -> Toast.makeText(this, "Đã xóa tác phẩm", Toast.LENGTH_SHORT).show());
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 }

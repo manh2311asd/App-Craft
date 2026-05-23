@@ -16,6 +16,11 @@ import androidx.annotation.Nullable;
 import com.example.appdraw.R;
 import com.example.appdraw.explore.ChatActivity;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class FloatingChatbotManager implements Application.ActivityLifecycleCallbacks {
 
     private static FloatingChatbotManager instance;
@@ -48,7 +53,43 @@ public class FloatingChatbotManager implements Application.ActivityLifecycleCall
                name.equals("RegisterInterestsActivity") ||
                name.equals("RegisterLevelActivity") ||
                name.equals("LiveListActivity") ||
-               name.equals("LiveActivity");
+               name.equals("LiveActivity") ||
+               name.equals("DrawingActivity") ||
+               name.equals("ProfileActivity") ||
+               name.equals("OtherUserProfileActivity") ||
+               name.equals("FullScreenImageActivity") ||
+               name.equals("EditProfileActivity") ||
+               name.equals("ProjectListActivity") ||
+               name.equals("ProjectDetailActivity") ||
+               name.equals("CreateProjectActivity") ||
+               name.equals("NotificationsActivity") ||
+               name.equals("PostDetailActivity") ||
+               name.equals("DoingProjectDetailActivity") ||
+               name.equals("SearchActivity") ||
+               name.equals("LessonListActivity") ||
+               name.equals("AllCategoriesActivity") ||
+               name.equals("TrendingDetailActivity") ||
+               name.equals("ArtistDetailActivity") ||
+               name.equals("CreateChallengeActivity") ||
+               name.equals("ChallengeSubmissionsActivity") ||
+               name.equals("SubmissionDetailActivity") ||
+               name.equals("GradeSubmissionActivity") ||
+               name.equals("CreateEventActivity") ||
+               name.equals("EventScheduleActivity") ||
+               name.equals("EventTicketActivity") ||
+               name.equals("ChallengeActivity") ||
+               name.equals("ChallengeDetailActivity") ||
+               name.equals("SubmitChallengeActivity") ||
+               name.equals("UserScoreDetailActivity") ||
+               name.equals("ChallengeGradingActivity") ||
+               name.equals("ChallengeEntryListActivity") ||
+               name.equals("EventDetailActivity");
+    }
+
+    public void setVisibility(boolean visible) {
+        if (floatingView != null) {
+            floatingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void attachToActivity(Activity activity) {

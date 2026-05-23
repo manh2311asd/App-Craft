@@ -23,6 +23,11 @@ import com.example.appdraw.model.Event;
 import com.example.appdraw.model.EventTicket;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Cao Đức Mạnh
+ * @version 1.0
+ */
 public class EventTicketActivity extends AppCompatActivity {
 
     private ImageView btnBack, btnShare, ivQrCode;

@@ -6,6 +6,11 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.appdraw.utils.FloatingChatbotManager;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class MyApplication extends Application {
     @Override
     public void onCreate() {

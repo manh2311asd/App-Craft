@@ -18,6 +18,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Đặng Thị Hồng Vân
+ * @version 1.0
+ */
 public class ChallengeSubmissionsActivity extends AppCompatActivity {
 
     private String challengeTitle;
@@ -89,7 +94,7 @@ public class ChallengeSubmissionsActivity extends AppCompatActivity {
                             tvStatus.setBackgroundColor(android.graphics.Color.parseColor("#E8F8F5"));
                             if (btnGrade != null) btnGrade.setText("Xem lại");
                         } else {
-                            tvStatus.setText("Đang chờ duyệt");
+                            tvStatus.setText("Đang chờ chấm");
                             tvStatus.setTextColor(android.graphics.Color.parseColor("#E67E22"));
                             tvStatus.setBackgroundColor(android.graphics.Color.parseColor("#FEF5E7"));
                         }

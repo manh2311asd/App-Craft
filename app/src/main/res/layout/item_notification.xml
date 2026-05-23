@@ -4,40 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="14dp"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_notif_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_default_user" />
+        android:src="@drawable/ic_default_user"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:layout_marginStart="16dp">
 
         <TextView
             android:id="@+id/tv_notif_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thông báo mới"
-            android:textSize="14sp"
-            android:textColor="#333333" />
+            android:textSize="15sp"
+            android:lineSpacingExtra="3dp"
+            android:textColor="#2D3436" />
 
         <TextView
             android:id="@+id/tv_notif_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vừa xong"
-            android:textSize="12sp"
-            android:textColor="#888888"
-            android:layout_marginTop="4dp" />
+            android:textSize="13sp"
+            android:textColor="#A0AAB2"
+            android:layout_marginTop="6dp" />
     </LinearLayout>
 
     <TextView
@@ -45,13 +48,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Theo dõi lại"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:background="@drawable/rounded_bg_blue"
         android:visibility="gone"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="12dp" />
 
 </LinearLayout>

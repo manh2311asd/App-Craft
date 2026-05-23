@@ -181,11 +181,11 @@ public class DrawingActivity extends AppCompatActivity {
                                             b.length);
                                     if (bmp != null) {
                                         drawingView.post(() -> {
-                                            com.example.appdraw.ZoomDrawingView.Layer activeLayer = drawingView
+                                            ZoomDrawingView.Layer activeLayer = drawingView
                                                     .getActiveLayer();
                                             if (activeLayer != null) {
                                                 activeLayer.strokes
-                                                        .add(new com.example.appdraw.ZoomDrawingView.Stroke(bmp));
+                                                        .add(new ZoomDrawingView.Stroke(bmp));
                                                 drawingView.invalidate();
                                             }
                                         });
@@ -644,6 +644,12 @@ public class DrawingActivity extends AppCompatActivity {
         dialog.setContentView(view);
 
         android.widget.EditText etArtworkName = view.findViewById(R.id.et_artwork_name);
+        
+        TextView txtProjectName = findViewById(R.id.txtProjectName);
+        if (txtProjectName != null && txtProjectName.getText() != null && !txtProjectName.getText().toString().trim().isEmpty() && !txtProjectName.getText().toString().equals("Tên dự án") && !txtProjectName.getText().toString().equals("Tên tác phẩm")) {
+            etArtworkName.setText(txtProjectName.getText().toString().trim());
+        }
+
         LinearLayout layoutProjectSelection = view.findViewById(R.id.layout_project_selection);
         android.widget.Spinner spinnerProjects = view.findViewById(R.id.spinner_projects);
         LinearLayout layoutNewProjectName = view.findViewById(R.id.layout_new_project_name);
@@ -798,6 +804,7 @@ public class DrawingActivity extends AppCompatActivity {
             db.collection("Artworks").document(artworkId)
                     .update("title", artworkName, "imageUrl", base64Image, "status", selectedStatus)
                     .addOnSuccessListener(aVoid -> {
+                        db.collection("Projects").document(projectId).update("coverImageUrl", base64Image);
                         android.widget.Toast
                                 .makeText(this, "Đã lưu tác phẩm thành công!", android.widget.Toast.LENGTH_SHORT)
                                 .show();
@@ -816,7 +823,8 @@ public class DrawingActivity extends AppCompatActivity {
             db.collection("Artworks").document(targetArtworkId).set(newArtwork)
                     .addOnSuccessListener(aVoid -> {
                         db.collection("Projects").document(projectId).update("artworkCount",
-                                com.google.firebase.firestore.FieldValue.increment(1));
+                                com.google.firebase.firestore.FieldValue.increment(1),
+                                "coverImageUrl", base64Image);
                         android.widget.Toast
                                 .makeText(this, "Đã lưu tác phẩm thành công!", android.widget.Toast.LENGTH_SHORT)
                                 .show();

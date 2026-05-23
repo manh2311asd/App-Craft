@@ -6,6 +6,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.appdraw.R;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class TrendingDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

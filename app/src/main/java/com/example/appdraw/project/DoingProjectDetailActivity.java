@@ -1,5 +1,7 @@
 package com.example.appdraw.project;
 
+import com.example.appdraw.R;
+
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -7,6 +9,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class DoingProjectDetailActivity extends AppCompatActivity {
 
     private LinearProgressIndicator progressBar;
@@ -60,3 +67,4 @@ public class DoingProjectDetailActivity extends AppCompatActivity {
         tvPercent.setText(percent + "%");
     }
 }
+

@@ -1,5 +1,10 @@
 package com.example.appdraw.model;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class Notification {
     private String id;
     private String userId;      // The target user who receives it

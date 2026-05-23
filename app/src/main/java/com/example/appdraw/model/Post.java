@@ -3,6 +3,11 @@ package com.example.appdraw.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class Post {
     private String id;
     private String uid;

@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class GeminiVisionService {
 
     // Using Custom API Key from .env
@@ -64,7 +69,7 @@ public class GeminiVisionService {
                 conn.setReadTimeout(60000);    // 60s
 
                 JSONObject payload = new JSONObject();
-                payload.put("model", "claude-haiku-4.5");
+                payload.put("model", "claude-haiku-4-5-20251001");
                 payload.put("max_tokens", 4096);
 
                 JSONArray messages = new JSONArray();
@@ -209,32 +214,43 @@ public class GeminiVisionService {
                 }
 
                 JSONObject payload = new JSONObject();
-                payload.put("model", "claude-haiku-4.5");
+                payload.put("model", "claude-haiku-4-5-20251001");
                 payload.put("max_tokens", 4096);
 
                 JSONArray messages = new JSONArray();
+                JSONObject systemMsg = new JSONObject();
+                systemMsg.put("role", "system");
+                systemMsg.put("content", "Bạn là Trợ lý Mỹ thuật AI. LUÔN LUÔN trả lời bằng TIẾNG VIỆT 100%. Tuyệt đối KHÔNG hiển thị thẻ <thought> hay quá trình suy nghĩ! BẠN CHỈ LÀ TRỢ LÝ VĂN BẢN, bạn KHÔNG THỂ tạo hay vẽ ra hình ảnh (chỉ hướng dẫn bằng lời). Tuyệt đối KHÔNG sinh ra các ký hiệu như <image> hay giả vờ đã vẽ xong.");
+                messages.put(systemMsg);
 
-                boolean isFirstUserMessage = true;
-
+                boolean hasSeenUser = false;
                 for (ChatMessage msg : history) {
                     JSONObject msgObj = new JSONObject();
-                    msgObj.put("role", msg.role.equals("model") ? "assistant" : "user");
+                    String role = msg.role.equals("model") ? "assistant" : "user";
                     
-                    JSONArray contentParts = new JSONArray();
-
-                    if (msg.text != null && !msg.text.isEmpty()) {
-                        JSONObject textPart = new JSONObject();
-                        textPart.put("type", "text");
-                        String textContent = msg.text;
-                        if (isFirstUserMessage && msg.role.equals("user")) {
-                            textContent = "[SYSTEM: Bạn là Trợ lý Mỹ thuật AI (tên Phong AI). LUÔN LUÔN trả lời bằng TIẾNG VIỆT 100%. Tuyệt đối KHÔNG hiển thị thẻ <thought> hay quá trình suy nghĩ! BẠN CHỈ LÀ TRỢ LÝ VĂN BẢN, bạn KHÔNG THỂ tạo hay vẽ ra hình ảnh (chỉ hướng dẫn bằng lời). Tuyệt đối KHÔNG sinh ra các ký hiệu như <start_of_image>, <image> hay giả vờ đã vẽ xong.] " + textContent;
-                            isFirstUserMessage = false;
-                        }
-                        textPart.put("text", textContent);
-                        contentParts.put(textPart);
+                    if (role.equals("user")) {
+                        hasSeenUser = true;
                     }
+                    
+                    // Anthropic strictly requires messages to start with "user". Skip leading "assistant" messages.
+                    if (!hasSeenUser && role.equals("assistant")) {
+                        continue;
+                    }
+                    
+                    msgObj.put("role", role);
+                    
+                    String textContent = msg.text != null ? msg.text : "";
 
                     if (msg.base64Image != null && !msg.base64Image.isEmpty()) {
+                        JSONArray contentParts = new JSONArray();
+                        
+                        if (!textContent.isEmpty()) {
+                            JSONObject textPart = new JSONObject();
+                            textPart.put("type", "text");
+                            textPart.put("text", textContent);
+                            contentParts.put(textPart);
+                        }
+
                         String cleanBase64 = msg.base64Image;
                         if (cleanBase64.startsWith("data:")) {
                             cleanBase64 = cleanBase64.substring(cleanBase64.indexOf(",") + 1);
@@ -247,12 +263,13 @@ public class GeminiVisionService {
                         imgUrl.put("url", "data:image/jpeg;base64," + cleanBase64);
                         imagePart.put("image_url", imgUrl);
                         contentParts.put(imagePart);
+                        
+                        msgObj.put("content", contentParts);
+                    } else {
+                        msgObj.put("content", textContent);
                     }
                     
-                    if (contentParts.length() > 0) {
-                        msgObj.put("content", contentParts);
-                        messages.put(msgObj);
-                    }
+                    messages.put(msgObj);
                 }
 
                 payload.put("messages", messages);

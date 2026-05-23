@@ -15,7 +15,13 @@ import com.example.appdraw.community.CommunityFragment;
 import com.example.appdraw.drawing.DrawingActivity;
 import com.example.appdraw.explore.ExploreFragment;
 import com.example.appdraw.main.HomeFragment;
+import com.example.appdraw.utils.FloatingChatbotManager;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
 
     private View navHome, navExplore, navCommunity, navProfile;
@@ -74,16 +80,19 @@ public class MainActivity extends AppCompatActivity {
         navHome.setOnClickListener(v -> {
             loadFragment(new HomeFragment());
             updateNavUI(0);
+            FloatingChatbotManager.getInstance().setVisibility(true);
         });
 
         navExplore.setOnClickListener(v -> {
             loadFragment(new ExploreFragment());
             updateNavUI(1);
+            FloatingChatbotManager.getInstance().setVisibility(false);
         });
 
         navCommunity.setOnClickListener(v -> {
             loadFragment(new CommunityFragment());
             updateNavUI(2);
+            FloatingChatbotManager.getInstance().setVisibility(true);
         });
 
         navProfile.setOnClickListener(v -> {

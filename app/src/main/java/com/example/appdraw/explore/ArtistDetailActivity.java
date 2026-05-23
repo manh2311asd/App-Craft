@@ -21,6 +21,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Lê Thùy Linh
+ * @version 1.0
+ */
 public class ArtistDetailActivity extends AppCompatActivity {
     private String artistId;
     private boolean isFollowing = false;

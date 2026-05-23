@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F9FA">
+    android:background="#F0F4FF">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_chat"
@@ -31,6 +31,16 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
+        
+        <ImageView
+            android:id="@+id/btn_clear_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:paddingHorizontal="16dp"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="#888888"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView

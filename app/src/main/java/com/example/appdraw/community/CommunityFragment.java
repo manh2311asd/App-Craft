@@ -298,7 +298,7 @@ public class CommunityFragment extends Fragment {
             if (userHeader != null) {
                 userHeader.setOnClickListener(v -> {
                     if (post.getUid() != null && post.getUid().equals(currentUid)) {
-                        startActivity(new Intent(getActivity(), com.example.appdraw.ProfileActivity.class));
+                        startActivity(new Intent(getActivity(), com.example.appdraw.profile.ProfileActivity.class));
                     } else {
                         Intent intent = new Intent(getActivity(), OtherUserProfileActivity.class);
                         intent.putExtra("USER_ID", post.getUid());

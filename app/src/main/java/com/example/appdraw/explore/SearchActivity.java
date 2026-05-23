@@ -309,9 +309,45 @@ public class SearchActivity extends AppCompatActivity {
                                 String authorName = doc.getString("authorName");
                                 if (authorName == null) authorName = doc.getString("author");
                                 String imageUrl = doc.getString("imageRes");
-                                if (title.equals("Core tỷ lệ khuôn mặt")) {
-                                    imageUrl = "core_ty_le_khuon_mat";
-                                }
+                                if ("Đêm trăng sáng trên đồi".equals(title)) { imageUrl = "dem_trang_sang_tren_doi"; }
+                                else if ("Khu vườn nhiệt đới".equals(title)) { imageUrl = "khu_vuon_nhiet_doi"; }
+                                else if ("Thung lũng sương mù".equals(title)) { imageUrl = "thung_lung_suong_mu"; }
+                                else if ("Vẽ rừng cây mùa thu".equals(title)) { imageUrl = "ve_rung_cay_mua_thu"; }
+                                else if ("Tổng hợp phong cảnh".equals(title)) { imageUrl = "tong_hop_phong_canh"; }
+                                else if ("Bãi biển lúc hoàng hôn".equals(title)) { imageUrl = "bai_bien_luc_hoang_hon"; }
+                                else if ("Núi non trùng điệp".equals(title)) { imageUrl = "nui_non_trung_diep"; }
+                                else if ("Dòng suối nhỏ trong vắt".equals(title)) { imageUrl = "dong_suoi_nho_trong_vat"; }
+                                else if ("Thảo nguyên xanh mướt".equals(title)) { imageUrl = "thao_nguyen_xanh_muot"; }
+                                else if ("Vẽ thác nước hùng vĩ".equals(title)) { imageUrl = "ve_thac_nuoc_hung_vi"; }
+                                else if ("Làm quen với Brush".equals(title)) { imageUrl = "lam_quen_voi_brush"; }
+                                else if ("Khái niệm hình học".equals(title)) { imageUrl = "khai_niem_hinh_hoc"; }
+                                else if ("Đánh bóng và chiếu sáng".equals(title)) { imageUrl = "danh_bong_va_chieu_sang"; }
+                                else if ("Kỹ thuật đan nét cọ".equals(title)) { imageUrl = "ki_thuat_dan_net_co"; }
+                                else if ("Vẽ tĩnh vật quả táo".equals(title)) { imageUrl = "ve_tinh_vat_qua_tao"; }
+                                else if ("Xây dựng khối 3D".equals(title)) { imageUrl = "xay_dung_khoi_3d"; }
+                                else if ("Luyện tập tổng hợp".equals(title)) { imageUrl = "luyen_tap_tong_hop"; }
+                                else if ("Palette pha màu cơ bản".equals(title)) { imageUrl = "palette_pha_mau_co_ban"; }
+                                else if ("Kỹ thuật loang màu ẩm".equals(title)) { imageUrl = "ki_thuat_loang_mau_am"; }
+                                else if ("Vẽ bầu trời gợn mây".equals(title)) { imageUrl = "ve_bau_troi_gon_may"; }
+                                else if ("Tĩnh vật cốc cà phê".equals(title)) { imageUrl = "tinh_vat_coc_ca_phe"; }
+                                else if ("Bông cẩm tú cầu".equals(title)) { imageUrl = "bong_cam_tu_cau"; }
+                                else if ("Sơn thủy hữu tình".equals(title)) { imageUrl = "son_thuy_huu_tinh"; }
+                                else if ("Ánh tà dương hoàng hôn".equals(title)) { imageUrl = "anh_ta_duong_hoang_hon"; }
+                                else if ("Phác thảo khuôn mặt Chibi".equals(title)) { imageUrl = "phac_thao_khuon_mat_chibi"; }
+                                else if ("Tỷ lệ cơ thể đầu to".equals(title)) { imageUrl = "ty_le_co_the_dau_to"; }
+                                else if ("Vẽ mắt to tròn đáng yêu".equals(title)) { imageUrl = "ve_mat_to_tron_dang_yeu"; }
+                                else if ("Biểu cảm khuôn mặt dễ thương".equals(title)) { imageUrl = "bieu_cam_khuon_mat_de_thuong"; }
+                                else if ("Vẽ tóc bồng bềnh".equals(title)) { imageUrl = "ve_toc_bong_benh"; }
+                                else if ("Phối đồ phong cách basic".equals(title)) { imageUrl = "phoi_do_phong_cach_basic"; }
+                                else if ("Lên màu pastel cơ bản".equals(title)) { imageUrl = "len_mau_pastel_co_ban"; }
+                                else if ("Hoàn thiện nhân vật".equals(title)) { imageUrl = "hoan_thien_nhan_vat"; }
+                                else if ("Core tỷ lệ khuôn mặt".equals(title)) { imageUrl = "core_ty_le_khuon_mat"; }
+                                else if ("Vẽ mắt Manga mượt mà".equals(title)) { imageUrl = "ve_mat_manga_muot_ma"; }
+                                else if ("Kiểu tóc nam và nữ cơ bản".equals(title)) { imageUrl = "kieu_toc_nam_va_nu_co_ban"; }
+                                else if ("Mảng biểu cảm vui buồn".equals(title)) { imageUrl = "mang_bieu_cam_vui_buon"; }
+                                else if ("Góc nghiêng thần thánh".equals(title)) { imageUrl = "goc_nghieng_than_thanh"; }
+                                else if ("Phác họa nhân vật nữ".equals(title)) { imageUrl = "phac_hoa_nhan_vat_nu"; }
+                                else if ("Phác họa nhân vật nam".equals(title)) { imageUrl = "phac_hoa_nhan_vat_nam"; }
                                 if (imageUrl == null || imageUrl.isEmpty() || imageUrl.matches("-?\\d+")) {
                                     imageUrl = doc.getString("thumbnailUrl");
                                     if (imageUrl == null || imageUrl.isEmpty()) imageUrl = doc.getString("imageUrl");

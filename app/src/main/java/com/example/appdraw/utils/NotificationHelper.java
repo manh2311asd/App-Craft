@@ -4,6 +4,11 @@ import com.example.appdraw.model.Notification;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class NotificationHelper {
 
     public static void sendNotification(String targetUserId, String type, String message, String targetId) {

@@ -19,6 +19,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Đặng Thị Hồng Vân
+ * @version 1.0
+ */
 public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ChallengeViewHolder> {
 
     private final Context context;
@@ -58,19 +63,18 @@ public class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.Chal
         if (dateStr != null) holder.tvDeadline.setText("Thời gian: " + dateStr);
         if (participantsCount != null) holder.tvParticipants.setText(participantsCount);
 
-        if (imageUrl != null && imageUrl.startsWith("data:image")) {
+        if (imageUrl != null && imageUrl.startsWith("http")) {
+            Glide.with(context).load(imageUrl).centerCrop().into(holder.ivThumb);
+        } else if (imageUrl != null && imageUrl.contains(",")) {
             try {
                 String base64Image = imageUrl.split(",")[1];
-                byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                Glide.with(context).load(decodedByte).centerCrop().into(holder.ivThumb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (imageRes != null) {
-            try {
-                int resId = Integer.parseInt(imageRes);
-                holder.ivThumb.setImageResource(resId);
+                byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
+                Glide.with(context)
+                     .asBitmap()
+                     .load(decodedString)
+                     .centerCrop()
+                     .error(R.drawable.ve_hoa_mau_nuoc)
+                     .into(holder.ivThumb);
             } catch (Exception e) {
                 holder.ivThumb.setImageResource(R.drawable.ve_hoa_mau_nuoc);
             }

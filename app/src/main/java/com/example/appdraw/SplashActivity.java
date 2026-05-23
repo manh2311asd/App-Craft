@@ -6,6 +6,11 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.appdraw.auth.LoginOptionsActivity;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Vũ Quang Vinh
+ * @version 1.0
+ */
 public class SplashActivity extends AppCompatActivity {
 
     @Override

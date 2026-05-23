@@ -81,14 +81,16 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="wrap_content"
+                android:minHeight="250dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp">
                 <ImageView
                     android:id="@+id/iv_grade_artwork"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"/>
             </com.google.android.material.card.MaterialCardView>
 
             <TextView

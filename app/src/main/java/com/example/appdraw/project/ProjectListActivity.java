@@ -139,6 +139,15 @@ public class ProjectListActivity extends AppCompatActivity {
                 intent.putExtra("PROJECT_COVER", project.getCoverImageUrl());
                 startActivity(intent);
             });
+
+            holder.itemView.setOnLongClickListener(v -> {
+                showProjectOptionsDialog(project);
+                return true;
+            });
+
+            if (holder.btnOptions != null) {
+                holder.btnOptions.setOnClickListener(v -> showProjectOptionsDialog(project));
+            }
         }
 
         @Override
@@ -147,16 +156,73 @@ public class ProjectListActivity extends AppCompatActivity {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView ivThumb;
+            ImageView ivThumb, btnOptions;
             TextView tvName, tvDescription, tvArtworkCount;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivThumb = itemView.findViewById(R.id.iv_project_thumb);
+                btnOptions = itemView.findViewById(R.id.btn_project_options);
                 tvName = itemView.findViewById(R.id.tv_project_name);
                 tvDescription = itemView.findViewById(R.id.tv_project_description);
                 tvArtworkCount = itemView.findViewById(R.id.tv_artwork_count);
             }
         }
+    }
+
+    private void showProjectOptionsDialog(Project project) {
+        String[] options = {"✏️ Đổi tên dự án", "🗑️ Xóa dự án"};
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Tùy chọn Dự án")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showRenameProjectDialog(project);
+                    } else if (which == 1) {
+                        showDeleteProjectConfirmDialog(project);
+                    }
+                })
+                .show();
+    }
+
+    private void showRenameProjectDialog(Project project) {
+        android.widget.EditText input = new android.widget.EditText(this);
+        input.setText(project.getName());
+        input.setSingleLine(true);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        input.setPadding(padding, padding, padding, padding);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Đổi tên dự án")
+                .setView(input)
+                .setPositiveButton("Lưu", (dialog, which) -> {
+                    String newName = input.getText().toString().trim();
+                    if (!newName.isEmpty()) {
+                        db.collection("Projects").document(project.getId())
+                                .update("name", newName)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Đã đổi tên", Toast.LENGTH_SHORT).show());
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void showDeleteProjectConfirmDialog(Project project) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Xóa dự án")
+                .setMessage("Bạn có chắc chắn muốn xóa dự án này? Toàn bộ tác phẩm bên trong cũng sẽ bị xóa vĩnh viễn.")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    // Xóa tất cả tác phẩm trong dự án
+                    db.collection("Artworks").whereEqualTo("projectId", project.getId()).get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                    db.collection("Artworks").document(doc.getId()).delete();
+                                }
+                                // Sau đó xóa dự án
+                                db.collection("Projects").document(project.getId()).delete()
+                                        .addOnSuccessListener(aVoid -> Toast.makeText(this, "Đã xóa dự án", Toast.LENGTH_SHORT).show());
+                            });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 }

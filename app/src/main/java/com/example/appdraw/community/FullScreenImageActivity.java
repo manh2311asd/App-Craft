@@ -16,6 +16,11 @@ import com.bumptech.glide.Glide;
 import com.example.appdraw.R;
 import java.io.OutputStream;
 
+/**
+ * Mảng chức năng được phân công và phát triển.
+ * @author Cao Đức Mạnh
+ * @version 1.0
+ */
 public class FullScreenImageActivity extends AppCompatActivity {
     private String imageUrl;
     private Bitmap currentBitmap;
