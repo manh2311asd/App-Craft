@@ -159,6 +159,15 @@ public class PostDetailActivity extends AppCompatActivity {
                     java.util.Collections.sort(replies, (c1, c2) -> Long.compare(c1.getCreatedAt(), c2.getCreatedAt()));
                 }
                 
+                int totalComments = topLevelComments.size() + replies.size();
+                TextView tvCommentCount = findViewById(R.id.tv_comment_count);
+                if (tvCommentCount != null) {
+                    tvCommentCount.setText(String.valueOf(totalComments));
+                }
+                
+                // Cập nhật lại số lượng bình luận chuẩn xác lên server để đồng bộ với Home Feed
+                FirebaseFirestore.getInstance().collection("Posts").document(postId).update("commentsCount", totalComments);
+                
                 for (com.example.appdraw.model.Comment topComment : topLevelComments) {
                     renderComment(topComment, llCommentsContainer, false);
                     for (com.example.appdraw.model.Comment reply : replies) {
@@ -341,8 +350,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void loadPostDetails() {
         FirebaseFirestore.getInstance().collection("Posts").document(postId)
-            .get().addOnSuccessListener(doc -> {
-                if (doc.exists()) {
+            .addSnapshotListener((doc, postError) -> {
+                if (postError != null) return;
+                if (doc != null && doc.exists()) {
                     Post post = doc.toObject(Post.class);
                     if (post != null) {
                         View includedPost = findViewById(R.id.included_post);
