@@ -33,22 +33,57 @@ import java.util.Calendar;
  * Người thực hiện: Đặng Thị Hồng Vân.
  * Cho phép Mentor lên lịch sự kiện offline/online, phát hành vé tham gia.
  */
+/**
+ * Lớp CreateEventActivity thuộc module chính của ứng dụng App Draw.
+ * Nhiệm vụ chính của lớp là quản lý dữ liệu, trạng thái giao diện và các thao tác xử lý
+ * liên quan đến màn hình hoặc thành phần được khai báo trong file CreateEventActivity.java.
+ * Các phần bên trong lớp có thể kết nối với Firebase, RecyclerView, Intent, Glide hoặc API bên ngoài
+ * tùy theo chức năng cụ thể của màn hình trong ứng dụng.
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
+    /**
+     * Biến `ivCoverPreview` tham chiếu tới thành phần giao diện trong layout XML, dùng để nhận thao tác người dùng hoặc cập nhật nội dung hiển thị.
+     */
     private ImageView ivBack, ivCoverPreview;
+    /**
+     * Biến `llUploadPrompt` lưu dữ liệu/trạng thái quan trọng kiểu View cvUploadCover,, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private View cvUploadCover, llUploadPrompt;
+    /**
+     * Biến `llPriceInputs` lưu dữ liệu/trạng thái quan trọng kiểu View llOfflineInputs, llZoomInputs,, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private View llOfflineInputs, llZoomInputs, llPriceInputs;
+    /**
+     * Biến `etZoomPasscode` lưu dữ liệu/trạng thái quan trọng kiểu EditText etTitle, etLocation, etPrice, etZoomLink,, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private EditText etTitle, etLocation, etPrice, etZoomLink, etZoomPasscode;
+    /**
+     * Biến `btnFormatOffline` tham chiếu tới thành phần giao diện trong layout XML, dùng để nhận thao tác người dùng hoặc cập nhật nội dung hiển thị.
+     */
     private TextView btnPickDate, btnPickStartTime, btnPickEndTime, btnFormatOnline, btnFormatOffline;
+    /**
+     * Biến `btnSubmit` tham chiếu tới thành phần giao diện trong layout XML, dùng để nhận thao tác người dùng hoặc cập nhật nội dung hiển thị.
+     */
     private MaterialButton btnSubmit;
 
+    /**
+     * Biến `coverImageBase64` lưu đường dẫn, Uri hoặc dữ liệu hình ảnh để hiển thị ảnh trên giao diện hoặc gửi ảnh lên hệ thống.
+     */
     private String coverImageBase64 = "";
+    /**
+     * Biến `selectedDateMillis` lưu dữ liệu/trạng thái quan trọng kiểu long, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private long selectedDateMillis = 0;
+    /**
+     * Biến `isOnline` lưu dữ liệu/trạng thái quan trọng kiểu boolean, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private boolean isOnline = true; // Default Online
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     try {
@@ -61,6 +96,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                         ivCoverPreview.setVisibility(View.VISIBLE);
                         llUploadPrompt.setVisibility(View.GONE);
+                        // Glide được dùng để tải ảnh từ URL/Uri lên ImageView, giúp ảnh hiển thị bất đồng bộ và tối ưu bộ nhớ.
                         com.bumptech.glide.Glide.with(this).load(bitmap).centerCrop().into(ivCoverPreview);
 
                     } catch (IOException e) {
@@ -72,6 +108,11 @@ public class CreateEventActivity extends AppCompatActivity {
     );
 
     @Override
+    /**
+     * Hàm onCreate() được gọi khi Activity bắt đầu được tạo.
+     * Tại đây lớp thiết lập layout, ánh xạ view, nhận dữ liệu từ Intent và khởi tạo các thành phần xử lý chính.
+     * @param savedInstanceState tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
@@ -80,6 +121,10 @@ public class CreateEventActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    /**
+     * Hàm initViews() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void initViews() {
         ivBack = findViewById(R.id.btn_back_create_event);
         cvUploadCover = findViewById(R.id.cv_upload_cover);
@@ -103,10 +148,15 @@ public class CreateEventActivity extends AppCompatActivity {
         updateFormatUI();
     }
 
+    /**
+     * Hàm setupListeners() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void setupListeners() {
         ivBack.setOnClickListener(v -> finish());
 
         cvUploadCover.setOnClickListener(v -> {
+            // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             imagePickerLauncher.launch(intent);
@@ -129,6 +179,10 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(v -> submitEvent());
     }
 
+    /**
+     * Hàm updateFormatUI() thực hiện một phần xử lý trong luồng chức năng của lớp CreateEventActivity.
+     * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+     */
     private void updateFormatUI() {
         if (isOnline) {
             btnFormatOnline.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#E8F5E9")));
@@ -153,6 +207,10 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Hàm showDatePicker() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog dialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
@@ -165,6 +223,11 @@ public class CreateEventActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Hàm showTimePicker() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     * @param targetTextView tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     private void showTimePicker(TextView targetTextView) {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog dialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
@@ -175,6 +238,10 @@ public class CreateEventActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Hàm submitEvent() ghi, gửi hoặc tạo dữ liệu mới dựa trên thao tác của người dùng.
+     * Các bước thường gồm kiểm tra dữ liệu đầu vào, chuẩn bị Object/Map và lưu lên Firebase hoặc API liên quan.
+     */
     private void submitEvent() {
         String title = etTitle.getText().toString().trim();
         String price = etPrice.getText().toString().trim();
@@ -189,27 +256,32 @@ public class CreateEventActivity extends AppCompatActivity {
             price = "Miễn phí (Zoom)";
             zoomLink = etZoomLink.getText().toString().trim();
             zoomPasscode = etZoomPasscode.getText().toString().trim();
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (zoomLink.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập Link phòng Zoom/Meet", Toast.LENGTH_SHORT).show();
                 return;
             }
         } else {
             location = etLocation.getText().toString().trim();
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (location.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập địa điểm tổ chức thực tế", Toast.LENGTH_SHORT).show();
                 return;
             }
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (price.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập giá vé", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
 
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (title.isEmpty() || selectedDateMillis == 0 || startTime.contains(">") || endTime.contains(">")) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin chung", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (coverImageBase64.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn ảnh bìa", Toast.LENGTH_SHORT).show();
             return;
@@ -218,12 +290,16 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSubmit.setEnabled(false);
         btnSubmit.setText("Đang tạo...");
 
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
         String uid = FirebaseAuth.getInstance().getUid();
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (uid == null) {
             Toast.makeText(this, "Lỗi xác thực", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
+        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
         String eventId = FirebaseFirestore.getInstance().collection("Events").document().getId();
 
         String eventType = "Workshop";
@@ -248,6 +324,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 System.currentTimeMillis()
         );
 
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
+        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
         FirebaseFirestore.getInstance().collection("Events").document(eventId)
                 .set(newEvent)
                 .addOnSuccessListener(aVoid -> {
@@ -261,6 +339,12 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Hàm getResizedBitmap() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     * @param image tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     * @param maxSize tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();

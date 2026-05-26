@@ -5,13 +5,36 @@ package com.example.appdraw.utils;
  * @author Vũ Quang Vinh
  * @version 1.0
  */
+/**
+ * Lớp HomeworkHelper thuộc module chính của ứng dụng App Draw.
+ * Nhiệm vụ chính của lớp là quản lý dữ liệu, trạng thái giao diện và các thao tác xử lý
+ * liên quan đến màn hình hoặc thành phần được khai báo trong file HomeworkHelper.java.
+ * Các phần bên trong lớp có thể kết nối với Firebase, RecyclerView, Intent, Glide hoặc API bên ngoài
+ * tùy theo chức năng cụ thể của màn hình trong ứng dụng.
+ */
 public class HomeworkHelper {
 
     public static class HomeworkDetails {
+        /**
+         * Biến `desc` lưu dữ liệu/trạng thái quan trọng kiểu String, được sử dụng trong các bước xử lý và hiển thị của lớp.
+         */
         public String desc;
+        /**
+         * Biến `criteria1` lưu dữ liệu/trạng thái quan trọng kiểu String, được sử dụng trong các bước xử lý và hiển thị của lớp.
+         */
         public String criteria1;
+        /**
+         * Biến `criteria2` lưu dữ liệu/trạng thái quan trọng kiểu String, được sử dụng trong các bước xử lý và hiển thị của lớp.
+         */
         public String criteria2;
 
+        /**
+         * Hàm HomeworkDetails() thực hiện một phần xử lý trong luồng chức năng của lớp HomeworkHelper.
+         * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+         * @param desc tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+         * @param criteria1 tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+         * @param criteria2 tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+         */
         public HomeworkDetails(String desc, String criteria1, String criteria2) {
             this.desc = desc;
             this.criteria1 = criteria1;
@@ -19,7 +42,13 @@ public class HomeworkHelper {
         }
     }
 
+    /**
+     * Hàm getHomeworkDetails() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     * @param lessonTitle tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     public static HomeworkDetails getHomeworkDetails(String lessonTitle) {
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (lessonTitle == null) {
             return getDefault();
         }
@@ -68,6 +97,10 @@ public class HomeworkHelper {
         return getDefault();
     }
 
+    /**
+     * Hàm getDefault() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     */
     private static HomeworkDetails getDefault() {
         return new HomeworkDetails(
                 "Thực hành lại tác phẩm trong bài học theo góc nhìn và phong cách của bạn. Đừng ngại sáng tạo thêm các chi tiết mới nhé!",

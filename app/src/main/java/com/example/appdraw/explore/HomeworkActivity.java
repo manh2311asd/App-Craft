@@ -22,37 +22,74 @@ import androidx.appcompat.widget.Toolbar;
  * Hỗ trợ người dùng chọn ảnh từ thư viện hoặc trích xuất trực tiếp ảnh dạng Base64 
  * từ màn hình Drawing Canvas để nộp bài và tự động chia sẻ lên mạng xã hội.
  */
+/**
+ * Lớp HomeworkActivity thuộc module chính của ứng dụng App Draw.
+ * Nhiệm vụ chính của lớp là quản lý dữ liệu, trạng thái giao diện và các thao tác xử lý
+ * liên quan đến màn hình hoặc thành phần được khai báo trong file HomeworkActivity.java.
+ * Các phần bên trong lớp có thể kết nối với Firebase, RecyclerView, Intent, Glide hoặc API bên ngoài
+ * tùy theo chức năng cụ thể của màn hình trong ứng dụng.
+ */
 public class HomeworkActivity extends AppCompatActivity {
 
+    /**
+     * Biến `ivUploadedImage` lưu đường dẫn, Uri hoặc dữ liệu hình ảnh để hiển thị ảnh trên giao diện hoặc gửi ảnh lên hệ thống.
+     */
     private ImageView ivUploadedImage;
+    /**
+     * Biến `llUploadPlaceholder` lưu dữ liệu/trạng thái quan trọng kiểu LinearLayout, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private LinearLayout llUploadPlaceholder;
+    /**
+     * Biến `isImageUploaded` lưu đường dẫn, Uri hoặc dữ liệu hình ảnh để hiển thị ảnh trên giao diện hoặc gửi ảnh lên hệ thống.
+     */
     private boolean isImageUploaded = false;
 
+    /**
+     * Biến `lessonTitle` lưu dữ liệu/trạng thái quan trọng kiểu String, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private String lessonTitle;
+    /**
+     * Biến `db` lưu dữ liệu/trạng thái quan trọng kiểu com.google.firebase.firestore.FirebaseFirestore, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
+    // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
     private com.google.firebase.firestore.FirebaseFirestore db;
+    /**
+     * Biến `uid` lưu mã định danh hoặc thông tin người dùng, giúp truy vấn đúng bản ghi trong Firebase và truyền dữ liệu giữa các màn hình.
+     */
     private String uid;
 
     @Override
+    /**
+     * Hàm onCreate() được gọi khi Activity bắt đầu được tạo.
+     * Tại đây lớp thiết lập layout, ánh xạ view, nhận dữ liệu từ Intent và khởi tạo các thành phần xử lý chính.
+     * @param savedInstanceState tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homework);
 
         Toolbar toolbar = findViewById(R.id.toolbar_homework);
         setSupportActionBar(toolbar);
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         lessonTitle = getIntent().getStringExtra("LESSON_TITLE");
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (lessonTitle == null) {
             lessonTitle = "Unknown Lesson";
         }
 
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         String imageResStr = getIntent().getStringExtra("IMAGE_RES");
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (imageResStr != null && !imageResStr.isEmpty()) {
             ImageView ivBg = findViewById(R.id.iv_homework_bg);
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (ivBg != null) {
                 int resId = getResources().getIdentifier(imageResStr, "drawable", getPackageName());
                 if (resId != 0) {
@@ -66,12 +103,19 @@ public class HomeworkActivity extends AppCompatActivity {
         TextView tvCriteria1 = findViewById(R.id.tv_criteria_1);
         TextView tvCriteria2 = findViewById(R.id.tv_criteria_2);
 
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (tvContent != null && details.desc != null) tvContent.setText(details.desc);
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (tvCriteria1 != null && details.criteria1 != null) tvCriteria1.setText(details.criteria1);
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (tvCriteria2 != null && details.criteria2 != null) tvCriteria2.setText(details.criteria2);
 
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
         db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null) {
+            // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
             uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
         } else {
             uid = "guest";
@@ -94,11 +138,16 @@ public class HomeworkActivity extends AppCompatActivity {
         fetchProgressFromFirestore();
     }
 
+    /**
+     * Biến `selectedImageUri` lưu đường dẫn, Uri hoặc dữ liệu hình ảnh để hiển thị ảnh trên giao diện hoặc gửi ảnh lên hệ thống.
+     */
+    // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
     private android.net.Uri selectedImageUri = null;
 
     private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> galleryLauncher = registerForActivityResult(
             new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
             result -> {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     selectedImageUri = result.getData().getData();
                     ivUploadedImage.setImageURI(selectedImageUri);
@@ -112,8 +161,10 @@ public class HomeworkActivity extends AppCompatActivity {
     private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> drawingLauncher = registerForActivityResult(
             new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
             result -> {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     String base64Url = result.getData().getStringExtra("SAVED_BASE64");
+                    // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                     if (base64Url != null && base64Url.startsWith("data:image")) {
                         String cleanBase64 = base64Url.substring(base64Url.indexOf(",") + 1);
                         byte[] decodedString = android.util.Base64.decode(cleanBase64, android.util.Base64.DEFAULT);
@@ -122,7 +173,9 @@ public class HomeworkActivity extends AppCompatActivity {
                         ivUploadedImage.setImageBitmap(decodedByte);
 
                         String path = android.provider.MediaStore.Images.Media.insertImage(getContentResolver(),
+                                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                                 decodedByte, "Homework_" + System.currentTimeMillis(), null);
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (path != null)
                             selectedImageUri = android.net.Uri.parse(path);
 
@@ -134,16 +187,27 @@ public class HomeworkActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Hàm fetchProgressFromFirestore() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     */
     private void fetchProgressFromFirestore() {
         if ("guest".equals(uid))
             return;
+        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
         db.collection("Users").document(uid).collection("lessonProgress").document(lessonTitle)
                 .get()
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                 .addOnSuccessListener(documentSnapshot -> {
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
+                    // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                     if (documentSnapshot.exists()) {
+                        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                         String status = documentSnapshot.getString("status");
                         if ("COMPLETED".equals(status)) {
+                            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                             String base64Url = documentSnapshot.getString("imageUrl");
+                            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                             if (base64Url != null && base64Url.startsWith("data:image")) {
                                 String cleanBase64 = base64Url.substring(base64Url.indexOf(",") + 1);
                                 byte[] decodedString = android.util.Base64.decode(cleanBase64,
@@ -154,7 +218,9 @@ public class HomeworkActivity extends AppCompatActivity {
 
                                 // Tạo local cache URI để có thể Share bài
                                 String path = android.provider.MediaStore.Images.Media.insertImage(getContentResolver(),
+                                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                                         decodedByte, "Homework_" + System.currentTimeMillis(), null);
+                                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                                 if (path != null)
                                     selectedImageUri = android.net.Uri.parse(path);
                             } else {
@@ -198,12 +264,20 @@ public class HomeworkActivity extends AppCompatActivity {
      * Đánh dấu Bài học là hoàn thành và lưu ảnh bài nộp (Base64) lên Firestore.
      * Cập nhật bản ghi tiến độ vào Collection "lessonProgress".
      */
+    /**
+     * Hàm markLessonCompleted() thực hiện một phần xử lý trong luồng chức năng của lớp HomeworkActivity.
+     * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+     */
     private void markLessonCompleted() {
         if (!"guest".equals(uid)) {
+            // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
             java.util.Map<String, Object> data = new java.util.HashMap<>();
+            // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
             data.put("status", "COMPLETED");
+            // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
             data.put("lastUpdated", System.currentTimeMillis());
 
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (selectedImageUri != null) {
                 try {
                     android.graphics.Bitmap bitmap;
@@ -221,17 +295,20 @@ public class HomeworkActivity extends AppCompatActivity {
                     String base64Image = android.util.Base64.encodeToString(fileBytes, android.util.Base64.DEFAULT);
                     String finalImageUrl = "data:image/jpeg;base64," + base64Image;
 
+                    // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
                     data.put("imageUrl", finalImageUrl);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
             db.collection("Users").document(uid).collection("lessonProgress").document(lessonTitle)
                     .update(data)
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
                             // Cập nhật đè nếu chưa tồn tại
+                            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                             db.collection("Users").document(uid).collection("lessonProgress").document(lessonTitle)
                                     .set(data);
                         }
@@ -240,20 +317,31 @@ public class HomeworkActivity extends AppCompatActivity {
         showSuccessDialog();
     }
 
+    /**
+     * Hàm simulateImageUpload() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     */
     private void simulateImageUpload() {
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_PICK);
         intent.setType("image/*");
         galleryLauncher.launch(intent);
     }
 
+    /**
+     * Hàm showSubmissionChoiceBottomSheet() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void showSubmissionChoiceBottomSheet() {
         com.google.android.material.bottomsheet.BottomSheetDialog bottomSheetDialog = new com.google.android.material.bottomsheet.BottomSheetDialog(
                 this);
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_submission_choice, null);
         bottomSheetDialog.setContentView(dialogView);
 
         dialogView.findViewById(R.id.card_draw_canvas).setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
+            // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
             android.content.Intent intent = new android.content.Intent(HomeworkActivity.this,
                     com.example.appdraw.drawing.DrawingActivity.class);
             drawingLauncher.launch(intent);
@@ -271,6 +359,10 @@ public class HomeworkActivity extends AppCompatActivity {
      * Hiển thị Dialog thông báo Nộp bài thành công và cung cấp tùy chọn
      * tự động chia sẻ tác phẩm vừa vẽ lên Bảng tin cộng đồng (Feed).
      */
+    /**
+     * Hàm showSuccessDialog() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void showSuccessDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -282,20 +374,25 @@ public class HomeworkActivity extends AppCompatActivity {
         Button btnMain = dialog.findViewById(R.id.btn_do_homework_now);
         Button btnClose = dialog.findViewById(R.id.btn_later);
 
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (tvTitle != null)
             tvTitle.setText("Nộp bài thành công!");
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (tvSubTitle != null)
             tvSubTitle.setText("Bài vẽ của bạn đã được gửi đi.\nHãy chia sẻ với Cộng đồng nào!");
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (btnMain != null)
             btnMain.setText("Chia sẻ tác phẩm");
 
         btnMain.setOnClickListener(v -> {
             dialog.dismiss();
+            // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
             android.content.Intent intent = new android.content.Intent(HomeworkActivity.this,
                     com.example.appdraw.community.CreatePostActivity.class);
             intent.putExtra("PREFILL_TEXT", "#" + lessonTitle.replaceAll("\\s+", "")
                     + " \nĐây là tác phẩm bài tập của mình. Mọi người nhận xét giúp nhé!");
             if (isImageUploaded) {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (selectedImageUri != null) {
                     intent.putExtra("PREFILL_IMAGE_URI", selectedImageUri.toString());
                 } else {

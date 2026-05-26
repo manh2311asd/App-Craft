@@ -28,30 +28,75 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Cao Đức Mạnh
  * @version 1.0
  */
+/**
+ * Lớp EventTicketActivity thuộc module chính của ứng dụng App Draw.
+ * Nhiệm vụ chính của lớp là quản lý dữ liệu, trạng thái giao diện và các thao tác xử lý
+ * liên quan đến màn hình hoặc thành phần được khai báo trong file EventTicketActivity.java.
+ * Các phần bên trong lớp có thể kết nối với Firebase, RecyclerView, Intent, Glide hoặc API bên ngoài
+ * tùy theo chức năng cụ thể của màn hình trong ứng dụng.
+ */
 public class EventTicketActivity extends AppCompatActivity {
 
+    /**
+     * Biến `ivQrCode` lưu dữ liệu/trạng thái quan trọng kiểu ImageView btnBack, btnShare,, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private ImageView btnBack, btnShare, ivQrCode;
+    /**
+     * Biến `tvTicketFooterWarning` lưu dữ liệu/trạng thái quan trọng kiểu TextView tvTitle, tvFormat, tvTime, tvLocation, tvTicketCode,, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private TextView tvTitle, tvFormat, tvTime, tvLocation, tvTicketCode, tvTicketFooterWarning;
+    /**
+     * Biến `btnJoinZoom` tham chiếu tới thành phần giao diện trong layout XML, dùng để nhận thao tác người dùng hoặc cập nhật nội dung hiển thị.
+     */
     private View btnViewMap, btnRemindMe, btnJoinZoom;
+    /**
+     * Biến `ivRemindIcon` lưu dữ liệu/trạng thái quan trọng kiểu ImageView, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private ImageView ivRemindIcon;
+    /**
+     * Biến `tvRemindText` tham chiếu tới thành phần giao diện trong layout XML, dùng để nhận thao tác người dùng hoặc cập nhật nội dung hiển thị.
+     */
     private TextView tvRemindText;
 
+    /**
+     * Biến `eventId` lưu mã định danh hoặc thông tin người dùng, giúp truy vấn đúng bản ghi trong Firebase và truyền dữ liệu giữa các màn hình.
+     */
     private String eventId;
+    /**
+     * Biến `ticketId` lưu mã định danh hoặc thông tin người dùng, giúp truy vấn đúng bản ghi trong Firebase và truyền dữ liệu giữa các màn hình.
+     */
     private String ticketId;
+    /**
+     * Biến `currentEvent` lưu dữ liệu/trạng thái quan trọng kiểu Event, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private Event currentEvent;
     
+    /**
+     * Biến `prefs` giữ đối tượng Firebase hoặc tham chiếu dữ liệu, dùng để đăng nhập, đọc, ghi hoặc đồng bộ dữ liệu với backend.
+     */
     private SharedPreferences prefs;
+    /**
+     * Biến `isReminded` lưu dữ liệu/trạng thái quan trọng kiểu boolean, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private boolean isReminded = false;
 
     @Override
+    /**
+     * Hàm onCreate() được gọi khi Activity bắt đầu được tạo.
+     * Tại đây lớp thiết lập layout, ánh xạ view, nhận dữ liệu từ Intent và khởi tạo các thành phần xử lý chính.
+     * @param savedInstanceState tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_ticket);
 
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         eventId = getIntent().getStringExtra("EVENT_ID");
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         ticketId = getIntent().getStringExtra("TICKET_ID");
         prefs = getSharedPreferences("EventReminders", Context.MODE_PRIVATE);
         
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (eventId != null) {
             isReminded = prefs.getBoolean("remind_" + eventId, false);
         }
@@ -60,11 +105,16 @@ public class EventTicketActivity extends AppCompatActivity {
         setupListeners();
         updateRemindUI();
         
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (eventId != null) {
             loadTicketData();
         }
     }
 
+    /**
+     * Hàm initViews() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void initViews() {
         btnBack = findViewById(R.id.btn_back_ticket);
         btnShare = findViewById(R.id.btn_share_ticket);
@@ -82,10 +132,15 @@ public class EventTicketActivity extends AppCompatActivity {
         tvRemindText = findViewById(R.id.tv_remind_text);
     }
 
+    /**
+     * Hàm setupListeners() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
         
         btnShare.setOnClickListener(v -> {
+            // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, "Tôi đã đăng ký sự kiện thành công trên App Draw!");
@@ -93,20 +148,30 @@ public class EventTicketActivity extends AppCompatActivity {
         });
 
         btnViewMap.setOnClickListener(v -> {
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (currentEvent != null && currentEvent.getLocation() != null) {
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(currentEvent.getLocation()));
+                // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
+                // Khối gọi API bên ngoài dùng để gửi yêu cầu, nhận phản hồi JSON và chuyển dữ liệu trả về thành nội dung hiển thị/đánh giá.
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                // Khối gọi API bên ngoài dùng để gửi yêu cầu, nhận phản hồi JSON và chuyển dữ liệu trả về thành nội dung hiển thị/đánh giá.
                 mapIntent.setPackage("com.google.android.apps.maps");
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
+                // Khối gọi API bên ngoài dùng để gửi yêu cầu, nhận phản hồi JSON và chuyển dữ liệu trả về thành nội dung hiển thị/đánh giá.
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    // Khối gọi API bên ngoài dùng để gửi yêu cầu, nhận phản hồi JSON và chuyển dữ liệu trả về thành nội dung hiển thị/đánh giá.
                     startActivity(mapIntent);
                 } else {
+                    // Khối gọi API bên ngoài dùng để gửi yêu cầu, nhận phản hồi JSON và chuyển dữ liệu trả về thành nội dung hiển thị/đánh giá.
                     String url = "https://www.google.com/maps/search/?api=1&query=" + Uri.encode(currentEvent.getLocation());
+                    // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                 }
             }
         });
 
         btnRemindMe.setOnClickListener(v -> {
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (currentEvent != null) {
                 isReminded = !isReminded;
                 prefs.edit().putBoolean("remind_" + eventId, isReminded).apply();
@@ -121,6 +186,7 @@ public class EventTicketActivity extends AppCompatActivity {
                     try {
                         java.util.Calendar cal = java.util.Calendar.getInstance();
                         cal.setTimeInMillis(beginTimeMillis);
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (currentEvent.getStartTime() != null && currentEvent.getStartTime().contains(":")) {
                             String[] parts = currentEvent.getStartTime().split(":");
                             cal.set(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0].trim()));
@@ -130,6 +196,7 @@ public class EventTicketActivity extends AppCompatActivity {
                         
                         java.util.Calendar calEnd = java.util.Calendar.getInstance();
                         calEnd.setTimeInMillis(currentEvent.getDateMillis());
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (currentEvent.getEndTime() != null && currentEvent.getEndTime().contains(":")) {
                             String[] parts = currentEvent.getEndTime().split(":");
                             calEnd.set(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0].trim()));
@@ -142,6 +209,7 @@ public class EventTicketActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
                     Intent intent = new Intent(Intent.ACTION_INSERT)
                             .setData(CalendarContract.Events.CONTENT_URI)
                             .putExtra(CalendarContract.Events.TITLE, currentEvent.getTitle())
@@ -161,6 +229,10 @@ public class EventTicketActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Hàm showRemindSuccessDialog() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     */
     private void showRemindSuccessDialog() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -177,6 +249,10 @@ public class EventTicketActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Hàm updateRemindUI() thực hiện một phần xử lý trong luồng chức năng của lớp EventTicketActivity.
+     * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+     */
     private void updateRemindUI() {
         if (isReminded) {
             btnRemindMe.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#E53935"))); // Nền đỏ
@@ -192,12 +268,20 @@ public class EventTicketActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Hàm loadTicketData() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     */
     private void loadTicketData() {
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         
+        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
         db.collection("Events").document(eventId).get().addOnSuccessListener(doc -> {
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (doc.exists()) {
                 currentEvent = doc.toObject(Event.class);
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (currentEvent != null) {
                     tvTitle.setText(currentEvent.getTitle());
                     tvFormat.setText(currentEvent.isOnline() ? "Online" : "Offline");
@@ -218,12 +302,17 @@ public class EventTicketActivity extends AppCompatActivity {
                         btnViewMap.setVisibility(View.GONE);
                         btnJoinZoom.setVisibility(View.VISIBLE);
                         
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (ivQrCode != null) ivQrCode.setVisibility(View.GONE);
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (tvTicketCode != null) tvTicketCode.setVisibility(View.GONE);
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (tvTicketFooterWarning != null) tvTicketFooterWarning.setVisibility(View.GONE);
                         
                         btnJoinZoom.setOnClickListener(v -> {
+                            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                             if (currentEvent.getZoomLink() != null && !currentEvent.getZoomLink().isEmpty()) {
+                                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                                 if (currentEvent.getZoomPasscode() != null && !currentEvent.getZoomPasscode().isEmpty()) {
                                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                                     android.content.ClipData clip = android.content.ClipData.newPlainText("Passcode", currentEvent.getZoomPasscode());
@@ -231,6 +320,7 @@ public class EventTicketActivity extends AppCompatActivity {
                                     Toast.makeText(EventTicketActivity.this, "Đã sao chép Passcode: " + currentEvent.getZoomPasscode(), Toast.LENGTH_LONG).show();
                                 }
                                 
+                                // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentEvent.getZoomLink()));
                                 startActivity(intent);
                             } else {
@@ -250,10 +340,14 @@ public class EventTicketActivity extends AppCompatActivity {
             }
         });
         
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (ticketId != null && !ticketId.isEmpty()) {
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
             db.collection("EventRegistrations").document(ticketId).get().addOnSuccessListener(doc -> {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (doc.exists()) {
                     EventTicket ticket = doc.toObject(EventTicket.class);
+                    // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                     if (ticket != null) {
                         tvTicketCode.setText("Mã vé : " + ticket.getTicketCode());
                     }
@@ -262,6 +356,11 @@ public class EventTicketActivity extends AppCompatActivity {
         }
     }
     
+    /**
+     * Hàm getDayOfWeek() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     * @param dow tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     private String getDayOfWeek(int dow) {
         switch (dow) {
             case java.util.Calendar.MONDAY: return "Thứ 2";

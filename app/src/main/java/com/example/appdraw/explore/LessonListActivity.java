@@ -25,57 +25,99 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Lê Thùy Linh
  * @version 1.0
  */
+/**
+ * Lớp LessonListActivity thuộc module chính của ứng dụng App Draw.
+ * Nhiệm vụ chính của lớp là quản lý dữ liệu, trạng thái giao diện và các thao tác xử lý
+ * liên quan đến màn hình hoặc thành phần được khai báo trong file LessonListActivity.java.
+ * Các phần bên trong lớp có thể kết nối với Firebase, RecyclerView, Intent, Glide hoặc API bên ngoài
+ * tùy theo chức năng cụ thể của màn hình trong ứng dụng.
+ */
 public class LessonListActivity extends AppCompatActivity {
+    /**
+     * Biến `db` lưu dữ liệu/trạng thái quan trọng kiểu FirebaseFirestore, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
+    // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
     private FirebaseFirestore db;
+    /**
+     * Biến `auth` giữ đối tượng Firebase hoặc tham chiếu dữ liệu, dùng để đăng nhập, đọc, ghi hoặc đồng bộ dữ liệu với backend.
+     */
+    // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
     private FirebaseAuth auth;
+    /**
+     * Biến `isSeeding` lưu dữ liệu/trạng thái quan trọng kiểu boolean, được sử dụng trong các bước xử lý và hiển thị của lớp.
+     */
     private boolean isSeeding = false;
 
     @Override
+    /**
+     * Hàm onCreate() được gọi khi Activity bắt đầu được tạo.
+     * Tại đây lớp thiết lập layout, ánh xạ view, nhận dữ liệu từ Intent và khởi tạo các thành phần xử lý chính.
+     * @param savedInstanceState tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_list);
 
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         String titleHeader = getIntent().getStringExtra("TITLE");
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (titleHeader == null)
             titleHeader = "Bài học gợi ý";
         ((TextView) findViewById(R.id.tv_toolbar_title)).setText(titleHeader);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(v -> finish());
         }
 
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
         db = FirebaseFirestore.getInstance();
+        // Khối xử lý Firebase dùng để đọc/ghi dữ liệu, xác thực người dùng hoặc lưu trữ tài nguyên trên backend của ứng dụng.
         auth = FirebaseAuth.getInstance();
 
         // Xóa loadAllLessons() trong onCreate vì onResume() sẽ chạy ngay sau đó,
         // tránh đúp truy vấn gây race-condition.
     }
 
+    /**
+     * Hàm loadAllLessons() tải hoặc lấy dữ liệu cần thiết cho màn hình.
+     * Dữ liệu có thể đến từ Firebase, Intent, danh sách nội bộ hoặc API bên ngoài rồi được đưa lên giao diện.
+     */
     private void loadAllLessons() {
         android.widget.LinearLayout container = findViewById(R.id.lesson_container);
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (container == null) return;
         container.removeAllViews();
 
+        // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
         String titleHeader = getIntent().getStringExtra("TITLE");
+        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
         if (titleHeader == null) titleHeader = "Bài học gợi ý";
 
         final String finalTitleHeader = titleHeader;
         String uid = auth.getUid();
 
         if ("Bài học gợi ý".equals(finalTitleHeader)) {
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             db.collection("Users").document(uid != null ? uid : "null").collection("lessonProgress").get().addOnSuccessListener(progSnap -> {
                 java.util.Set<String> completedTitles = new java.util.HashSet<>();
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                 for (DocumentSnapshot d : progSnap) {
                     if ("COMPLETED".equals(d.getString("status"))) completedTitles.add(d.getId());
                 }
 
                 db.collection("Lessons").get().addOnSuccessListener(lessonSnap -> {
+                    // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                     java.util.List<DocumentSnapshot> allDocs = new java.util.ArrayList<>();
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                     for (DocumentSnapshot d : lessonSnap) allDocs.add(d);
                     allDocs.sort((d1, d2) -> {
                         Long c1 = d1.getLong("createdAt");
                         Long c2 = d2.getLong("createdAt");
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (c1 != null && c2 != null) return Long.compare(c1, c2);
                         
                         String id1 = d1.getId(); String id2 = d2.getId();
@@ -86,21 +128,35 @@ public class LessonListActivity extends AppCompatActivity {
                         } catch (Exception e) { return id1.compareTo(id2); }
                     });
 
+                    // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
+                    // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                     java.util.Map<String, java.util.List<DocumentSnapshot>> lessonsByCategory = new java.util.HashMap<>();
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                     for (DocumentSnapshot doc : allDocs) {
                         String cat = doc.getString("category");
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (cat == null) cat = "Khác";
+                        // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
+                        // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
                         if (!lessonsByCategory.containsKey(cat)) lessonsByCategory.put(cat, new java.util.ArrayList<>());
                         lessonsByCategory.get(cat).add(doc);
                     }
 
                     String[] coreCategories = { "Dành cho người mới bắt đầu", "Vẽ thiên nhiên", "Khám phá màu nước", "Nghệ thuật vẽ Chibi", "Chân dung Manga" };
+                    // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                     java.util.List<DocumentSnapshot> displayDocs = new java.util.ArrayList<>();
                     for (String cat : coreCategories) {
+                        // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
+                        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                         java.util.List<DocumentSnapshot> catLessons = lessonsByCategory.get(cat);
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (catLessons != null) {
+                            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                             for (DocumentSnapshot doc : catLessons) {
                                 String t = doc.getString("title");
+                                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                                 if (t != null && !completedTitles.contains(t)) {
                                     displayDocs.add(doc);
                                     break;
@@ -112,13 +168,18 @@ public class LessonListActivity extends AppCompatActivity {
                 });
             });
         } else {
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
             db.collection("Lessons").whereEqualTo("category", finalTitleHeader).get().addOnSuccessListener(queryDocumentSnapshots -> {
                 boolean needsReseed = false;
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (queryDocumentSnapshots.isEmpty()) {
                     needsReseed = true;
                 } else {
+                    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         String t = doc.getString("title");
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (t != null && (t.contains("Khởi động với " + finalTitleHeader) ||
                                 t.contains("Thực hành " + finalTitleHeader) ||
                                 t.contains("Nâng cao " + finalTitleHeader) ||
@@ -140,11 +201,15 @@ public class LessonListActivity extends AppCompatActivity {
 
                 patchLessonImages(finalTitleHeader);
 
+                // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                 java.util.List<DocumentSnapshot> displayDocs = new java.util.ArrayList<>();
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                 for (DocumentSnapshot d : queryDocumentSnapshots) displayDocs.add(d);
                 displayDocs.sort((d1, d2) -> {
                         Long c1 = d1.getLong("createdAt");
                         Long c2 = d2.getLong("createdAt");
+                        // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                         if (c1 != null && c2 != null) return Long.compare(c1, c2);
                         
                     String id1 = d1.getId(); String id2 = d2.getId();
@@ -160,17 +225,30 @@ public class LessonListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Hàm renderLessons() chuẩn bị hoặc cập nhật giao diện hiển thị cho người dùng.
+     * Hàm thường ánh xạ dữ liệu từ Object/List/Map vào TextView, ImageView, RecyclerView hoặc các view khác.
+     * @param displayDocs tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     * @param finalTitleHeader tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     * @param container tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     * @param uid tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
+    // Dữ liệu dạng List lưu nhiều phần tử cùng loại, thường dùng làm nguồn dữ liệu cho RecyclerView hoặc vòng lặp hiển thị.
+    // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
     private void renderLessons(java.util.List<DocumentSnapshot> displayDocs, String finalTitleHeader, android.widget.LinearLayout container, String uid) {
         LayoutInflater inflater = LayoutInflater.from(this);
+        // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
         for (DocumentSnapshot doc : displayDocs) {
             String title = doc.getString("title");
 
             String author = doc.getString("author");
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (author == null)
                 author = doc.getString("authorName");
 
             String imageResStr = doc.getString("imageRes");
             String imageUrl = doc.getString("thumbnailUrl");
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (imageUrl == null || imageUrl.isEmpty()) {
                 imageUrl = doc.getString("imageUrl");
             }
@@ -263,9 +341,12 @@ public class LessonListActivity extends AppCompatActivity {
             TextView tvStatus = lessonView.findViewById(R.id.tv_status);
             TextView tvDuration = lessonView.findViewById(R.id.tv_duration);
 
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (tvTitle != null)
                 tvTitle.setText(title);
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (tvAuthor != null) {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (author != null && !author.toLowerCase().startsWith("bởi")) {
                     tvAuthor.setText("Bởi " + author);
                 } else {
@@ -273,7 +354,9 @@ public class LessonListActivity extends AppCompatActivity {
                 }
             }
 
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (ivThumb != null) {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (imageResStr != null && !imageResStr.isEmpty() && !imageResStr.matches("-?\\d+")) {
                     try {
                         int resId = getResources().getIdentifier(imageResStr, "drawable", getPackageName());
@@ -281,13 +364,16 @@ public class LessonListActivity extends AppCompatActivity {
                             ivThumb.setImageResource(resId);
                     } catch (Exception e) {
                     }
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 } else if (imageUrl != null && !imageUrl.isEmpty()) {
                     if (imageUrl.startsWith("data:image")) {
                         try {
                             byte[] imageByteArray = android.util.Base64.decode(imageUrl.split(",")[1], android.util.Base64.DEFAULT);
+                            // Glide được dùng để tải ảnh từ URL/Uri lên ImageView, giúp ảnh hiển thị bất đồng bộ và tối ưu bộ nhớ.
                             Glide.with(this).load(imageByteArray).centerCrop().into(ivThumb);
                         } catch (Exception e) {}
                     } else {
+                        // Glide được dùng để tải ảnh từ URL/Uri lên ImageView, giúp ảnh hiển thị bất đồng bộ và tối ưu bộ nhớ.
                         Glide.with(this).load(imageUrl).centerCrop().into(ivThumb);
                     }
                 }
@@ -298,12 +384,15 @@ public class LessonListActivity extends AppCompatActivity {
             tvStatus.setTextColor(Color.parseColor("#808080"));
 
             RatingBar rb = lessonView.findViewById(R.id.rating_bar);
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (rb != null) {
                 rb.setRating(4.5f);
             }
 
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (tvDuration != null) {
                 Long actualDuration = doc.getLong("durationMin");
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (actualDuration != null && actualDuration > 0) {
                     tvDuration.setText(actualDuration + " min");
                 } else {
@@ -318,9 +407,12 @@ public class LessonListActivity extends AppCompatActivity {
                 }
             }
 
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             if (uid != null && title != null && !title.contains("/")) {
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                 db.collection("Users").document(uid).collection("lessonProgress").document(title)
                         .get().addOnSuccessListener(progDoc -> {
+                            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                             if (progDoc.exists()) {
                                 String status = progDoc.getString("status");
                                 if ("COMPLETED".equals(status)) {
@@ -339,15 +431,18 @@ public class LessonListActivity extends AppCompatActivity {
             final String finalImageRes = imageResStr;
             final String finalAuthor = author;
             final String finalDocId = doc.getId();
+            // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
             String linkCategory = doc.getString("category") != null ? doc.getString("category") : finalTitleHeader;
             
             lessonView.setOnClickListener(v -> {
                 String currentStatus = tvStatus.getText().toString();
                 if ("Hoàn thành".equals(currentStatus)) {
+                    // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
                     Intent intent = new Intent(this, com.example.appdraw.explore.MySubmissionActivity.class);
                     intent.putExtra("LESSON_TITLE", title);
                     startActivity(intent);
                 } else {
+                    // Intent được dùng để điều hướng sang màn hình khác hoặc truyền dữ liệu cần thiết giữa các Activity.
                     Intent intent = new Intent(this, LessonDetailActivity.class);
                     intent.putExtra("LESSON_TITLE", title);
                     intent.putExtra("CATEGORY", linkCategory);
@@ -362,12 +457,18 @@ public class LessonListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Hàm seedLessonsForCategory() thực hiện một phần xử lý trong luồng chức năng của lớp LessonListActivity.
+     * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+     * @param category tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     private void seedLessonsForCategory(String category) {
         if (isSeeding)
             return;
         isSeeding = true;
 
         db.collection("Lessons").whereEqualTo("category", category).get().addOnSuccessListener(snap -> {
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
             for (DocumentSnapshot doc : snap) {
                 doc.getReference().delete();
             }
@@ -459,13 +560,19 @@ public class LessonListActivity extends AppCompatActivity {
 
             for (int i = 0; i < titles.length; i++) {
                 String title = titles[i];
+                // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
                 java.util.Map<String, Object> data = new java.util.HashMap<>();
+                // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
                 data.put("title", title);
+                // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
                 data.put("authorName", author);
+                // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
                 data.put("imageRes", images[i]);
+                // Dữ liệu dạng Map được dùng để gom các trường thông tin theo khóa - giá trị trước khi lưu Firebase hoặc truyền qua API.
                 data.put("category", category);
 
                 String safeDocId = "lesson_" + Math.abs(category.hashCode()) + "_" + i;
+                // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
                 db.collection("Lessons").document(safeDocId).set(data);
             }
 
@@ -478,10 +585,17 @@ public class LessonListActivity extends AppCompatActivity {
     }
 
     /** Patch ảnh đúng cho các bài học đã seed trước đó (chạy 1 lần khi load) */
+    /**
+     * Hàm patchLessonImages() thực hiện một phần xử lý trong luồng chức năng của lớp LessonListActivity.
+     * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+     * @param category tham số truyền vào hàm, cung cấp dữ liệu hoặc ngữ cảnh cần thiết cho bước xử lý tương ứng.
+     */
     private void patchLessonImages(String category) {
         if (category.contains("thiên nhiên")) {
             String docId = "lesson_" + Math.abs(category.hashCode()) + "_5";
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
             db.collection("Lessons").document(docId).get().addOnSuccessListener(doc -> {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (doc.exists()) {
                     String currentImg = doc.getString("imageRes");
                     if (!"dem_trang_sang_tren_doi".equals(currentImg)) {
@@ -491,7 +605,9 @@ public class LessonListActivity extends AppCompatActivity {
             });
         } else if (category.contains("Manga")) {
             String docId = "lesson_" + Math.abs(category.hashCode()) + "_0";
+            // Dữ liệu snapshot/document là kết quả trả về từ Firebase, cần đọc đúng trường và kiểm tra null trước khi hiển thị.
             db.collection("Lessons").document(docId).get().addOnSuccessListener(doc -> {
+                // Kiểm tra null/rỗng/tồn tại giúp tránh lỗi NullPointerException và xử lý trường hợp dữ liệu chưa có hoặc người dùng nhập thiếu.
                 if (doc.exists()) {
                     String currentImg = doc.getString("imageRes");
                     if (!"core_ty_le_khuon_mat".equals(currentImg)) {
@@ -503,6 +619,10 @@ public class LessonListActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * Hàm onResume() thực hiện một phần xử lý trong luồng chức năng của lớp LessonListActivity.
+     * Comment này mô tả vai trò tổng quát để người đọc dễ theo dõi khi kết hợp với tên hàm và phần code bên dưới.
+     */
     protected void onResume() {
         super.onResume();
         if (!isSeeding) {
