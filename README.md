@@ -15,15 +15,17 @@ App-Draw/
 │           ├── AndroidManifest.xml  # File khai báo các Activity, quyền (permissions) của ứng dụng
 │           ├── java/com/example/appdraw/
 │           │   ├── auth/            # [Vũ Quang Vinh] Chứa các Activity/Class liên quan đến xác thực (Đăng nhập, Đăng ký, Quên mật khẩu)
-│           │   ├── challenge/       # [Cao Đức Mạnh & Đặng Thị Hồng Vân] Chứa các tính năng liên quan đến Thử thách (Danh sách, Chấm điểm, Tạo thử thách)
+│           │   ├── challenge/       # [Đặng Thị Hồng Vân] Chứa các tính năng liên quan đến Thử thách (Danh sách, Chấm điểm, Tạo thử thách)
 │           │   ├── community/       # [Cao Đức Mạnh] Chứa các tính năng Cộng đồng (Bài viết, Bình luận)
 │           │   ├── drawing/         # [Vũ Quang Vinh] Chứa logic cho màn hình Vẽ (ZoomDrawingView, công cụ vẽ)
 │           │   ├── event/           # [Đặng Thị Hồng Vân] Chứa các tính năng Sự kiện (Đăng ký sự kiện, Mua vé)
-│           │   ├── explore/         # [Lê Thùy Linh] Chứa tính năng Khám phá (Tìm kiếm, Khám phá, Bài học vẽ)
-│           │   ├── live/            # [Đặng Thị Hồng Vân] Chứa tính năng Livestream / Vẽ trực tiếp
+│           │   ├── explore/         # [Lê Thùy Linh] Chứa tính năng Khám phá (Tìm kiếm, Khám phá, Bài học vẽ, AI Chatbot)
+│           │   ├── live/            # [Cao Đức Mạnh] Chứa tính năng Livestream / Vẽ trực tiếp
 │           │   ├── main/            # Chứa các thành phần giao diện chính (Trang chủ, Điều hướng)
 │           │   ├── model/           # Chứa các lớp Data Models (Ví dụ: User, Post, Comment, Project...)
-│           │   ├── project/         # [Vũ Quang Vinh] Chứa các tính năng Quản lý Dự án vẽ của người dùng (Tạo mới, Chi tiết dự án)
+│           │   ├── notification/    # [Vũ Quang Vinh] Chứa các tính năng Thông báo
+│           │   ├── profile/         # [Vũ Quang Vinh] Chứa tính năng Quản lý Thông tin cá nhân
+│           │   ├── project/         # [Đặng Thị Hồng Vân] Chứa các tính năng Quản lý Dự án vẽ của người dùng (Tạo mới, Chi tiết dự án)
 │           │   ├── utils/           # Chứa các lớp tiện ích (Helpers, Constants, Utils)
 │           │   └── ...              # Các Activity độc lập khác như MainActivity, ProfileActivity, SplashActivity...
 │           └── res/
